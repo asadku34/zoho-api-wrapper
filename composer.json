@@ -1,0 +1,35 @@
+{
+    "name": "asad/laravel-zoho-api-wrapper",
+    "description": "This is ZOHO REST API-V2 wrapper",
+    "require": {
+        "php": "^7.0",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+        
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Asadur Rahman",
+            "email": "asadku34@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Asad\\Zoho\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Asad\\Zoho\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Asad\\Zoho\\ZohoServiceProvider"
+            ]
+        }
+    }
+}
