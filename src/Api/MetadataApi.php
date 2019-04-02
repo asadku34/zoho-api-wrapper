@@ -11,6 +11,12 @@ class MetadataApi extends RestApi
     {
         parent::__construct($config_id);
     }
+
+    public function getModules()
+    {
+        $request = $this->createRequest('modules', 'modules', $this->meta_extension);
+        return $this->makeRequest($request);
+    }
     
     public function getModuleMeta($module_name)
     {

@@ -138,6 +138,13 @@ class ZohoRequest
             $this->URI = $this->module ."/". $this->action ."?". $this->getQuery();
         }
 
+        // Get Module List
+        if ($action == 'modules') {
+            $this->setAction('All Modules');
+            $this->setHttpVerb('GET');
+            $this->URI = implode('', $param) . $this->module;
+        }
+
         //Meta Data Processing
 
         if ($action == 'module-meta') {
