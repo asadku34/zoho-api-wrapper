@@ -3,9 +3,8 @@
 namespace Asad\Zoho\Client;
 
 use Asad\Zoho\Exception\ResponseException;
-use GuzzleHttp\Psr7\Response;
-
 use Asad\Zoho\HttpStatus\HttpStatus;
+use GuzzleHttp\Psr7\Response;
 
 class ZohoResponse
 {	

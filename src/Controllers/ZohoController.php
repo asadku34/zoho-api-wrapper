@@ -2,10 +2,10 @@
 namespace Asad\Zoho\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Asad\Zoho\Client\ZohoClient;
 use Asad\Zoho\Exception\ZohoException;
 use Asad\Zoho\Models\ZohoOauthSetting;
-use App\Http\Controllers\Controller;
 
 
 class ZohoController extends Controller
@@ -66,6 +66,11 @@ class ZohoController extends Controller
     public function getClient()
     {
         return new ZohoClient();
+    }
+
+    public function zoho()
+    {
+        return "from zoho api wrapper";
     }
 
 }
