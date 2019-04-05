@@ -32,7 +32,7 @@ class ZohoClient
         return $this->client;
     }
 
-    public function execute($http_verb, $url, $access_token, array $data = null)
+    public function execute($action, $http_verb, $url, $access_token, array $data = null)
     {
 
         if ($data !== null) {
@@ -54,12 +54,12 @@ class ZohoClient
             }
         }
         
-        return new ZohoResponse($res);
+        return new ZohoResponse($res, $action);
     }
 
     public function get(string $url, string $access_token)
     {
-
+        $action = 'get';
         try {
             $res = $this->client->request('GET', $url);
         } catch (GuzzleRequestException $e) {
@@ -70,10 +70,10 @@ class ZohoClient
             }
         }
         
-        return new ZohoResponse($res);
+        return new ZohoResponse($res, $action);
     }
 
-    public function post($url)
+    public function post($url, $action='')
     {
         try {
             $res = $this->client->request('POST', $url);
@@ -85,7 +85,7 @@ class ZohoClient
             }
         }
         
-        return new ZohoResponse($res);
+        return new ZohoResponse($res, $action);
     }
 
 }

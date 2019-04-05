@@ -103,7 +103,7 @@ class Authentication
         $id = $setting->id;
         
 		$refresh_url	= $this->getRefreshTokenUrl($refreshToken, $client_id, $client_secret);
-        $response = $this->getClient()->post($refresh_url)->getResults();
+        $response = $this->getClient()->post($refresh_url, 'refreshToken')->getResults();
         
         if (isset($response->error)) {
             throw new ZohoException($response->error);

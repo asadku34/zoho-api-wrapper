@@ -69,6 +69,11 @@ class ZohoApi
         return $this->request->getDataJson();
     }
 
+    public function getAction()
+    {
+        return $this->request->getAction();
+    }
+
     public function get(ZohoRequest $request): ZohoResponse
     {
         $this->setRequest($request);
@@ -76,8 +81,9 @@ class ZohoApi
         $url = $this->getUrl();
         $http_verb = $this->getRequestVerb();
         $json_data = $this->getJson();
+        $action = $this->getAction();
 
-        $this->response = $this->client->execute($http_verb, $url, $access_token, $json_data);
+        $this->response = $this->client->execute($action, $http_verb, $url, $access_token, $json_data);
         return $this->response;
     }
 

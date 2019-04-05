@@ -11,7 +11,7 @@ class RecordApi extends RestApi
         parent::__construct($config_id);
     }
     /**
-     * @param $module = 'Lead'
+     * @param $module = 'Leads'
      * 
      */
     public function listOfRecords($module)
@@ -21,7 +21,7 @@ class RecordApi extends RestApi
     }
 
     /**
-     * @param string $module = 'Lead'
+     * @param string $module = 'Leads'
      * 
      * @param string $record_id = '1108640000047708962'
      */

@@ -95,14 +95,14 @@ class ZohoRequest
         }
 
         if ($action == 'b-update') {
-            $this->setAction('bulk_update');
+            $this->setAction('Bulk Update');
             $this->setHttpVerb('PUT');
             $this->setDataJson($param);
             $this->URI = $this->module;
         }
         
         if ($action == 'update') {
-            $this->setAction('update');
+            $this->setAction('Update');
             $this->setHttpVerb('PUT');
             $record_id = $param['record_id'];
             unset($param['record_id']);
@@ -111,20 +111,20 @@ class ZohoRequest
         }
 
         if ($action == 'upsert') {
-            $this->setAction('upsert');
+            $this->setAction('Upsert');
             $this->setHttpVerb('POST');
             $this->setDataJson($param);
             $this->URI = $this->module ."/upsert";
         }
 
         if ($action == 'b-delete') {
-            $this->setAction('bulk delete');
+            $this->setAction('Bulk Delete');
             $this->setHttpVerb('DELETE');
             $this->URI = $this->module ."?ids=". implode(',', $param); 
         }
 
         if ($action == 'delete') {
-            $this->setAction('delete');
+            $this->setAction('Delete');
             $this->setHttpVerb('DELETE');
             $this->URI = $this->module ."/". implode('',$param);
         }
@@ -133,7 +133,7 @@ class ZohoRequest
             foreach ($param as $key => $val) {
                 $this->parameter[$key] = $val;
             }
-            $this->setAction('deleted');
+            $this->setAction('Deleted');
             $this->setHttpVerb('GET');
             $this->URI = $this->module ."/". $this->action ."?". $this->getQuery();
         }

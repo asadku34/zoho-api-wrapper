@@ -19,7 +19,7 @@ class ZohoController extends Controller
 			
 			if($zoho_setting){
                 $code           = $request->input('code');
-                $redirect_url   = 'http://' . $zoho_setting->client_domain .'/oauth2back';
+                $redirect_url   = $zoho_setting->protocol .'://' . $zoho_setting->client_domain .'/oauth2back';
                 $client_id      = $zoho_setting->client_id;
                 $client_secret  = $zoho_setting->client_secret;
 

@@ -26,11 +26,11 @@ class ZohoResponse
 	*
 	* @param Response $response
 	*/
-    public function __construct(Response $response) 
+    public function __construct(Response $response, $action) 
     {
 		$this->setResponse($response);
 		$this->checkHttpStatusCode();
-		$this->parseResponse();
+		$this->parseResponse($action);
     }
     
     /**
@@ -50,34 +50,162 @@ class ZohoResponse
 	 *
 	 * @throws ResponseException
 	 */
-	protected function parseResponse(): ZohoResponse 
+	protected function parseResponse($action): ZohoResponse
 	{
-		$json_response = $this->response->getBody()->getContents();
-
-		if ($this->http_status_code === 204) {
-			$this->setStatus("error");
-			$error_response = [
-				'status' => 'NO_CONTENT',
-				'data' => 'There is no content available for the request.'
-			];
-			throw new ResponseException("There is no content available for the request.", $this->http_status_code, json_encode($error_response));
-		}
 		
-		if ($this->http_status_code !== 200 && 
-			$this->http_status_code !== 201 && 
-			$this->http_status_code !== 202
-			) {
-			$error_response = json_decode($json_response);
-			$this->setStatus('error');
-			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
-		}
+		$json_response = $this->response->getBody()->getContents();
+		$invoke_function = camel_case(str_replace(' ', '', $action));
+		return $this->$invoke_function($json_response);
 
+	}
+
+	private function setSuccessResponse($json_response)
+	{
 		$this->setResults($json_response);
 		$array_response = $this->toArray($json_response);
 		$this->setStatus('success');
-		
 		return $this;
 	}
+
+	private function yieldException($json_response)
+	{
+		$error_response = json_decode($json_response);
+		$this->setStatus('error');
+		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+	}
+
+	private function noContentException()
+	{
+		$this->setStatus("error");
+		$error_response = [
+			'code' 		=> 'NO_CONTENT',
+			'details' 	=> [],
+			'message' 	=> 'There is no content available for the request.',
+			'status' 	=> 'success',
+		];
+		throw new ResponseException("There is no content available for the request.", $this->http_status_code, json_encode($error_response));
+	}
+
+	private function insertException($json_response)
+	{
+		$error_response = json_decode($json_response);
+		$error_response = collect($error_response->data);
+		$error_response = $error_response->first();
+		$this->setStatus('error');
+		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+	}
+
+	private function updateException($json_response)
+	{
+		$error_response = json_decode($json_response);
+		$error_response = collect($error_response->data);
+		$error_response = $error_response->first();
+		$this->setStatus('error');
+		throw new ResponseException("Failed to update one/more records.", $this->http_status_code, json_encode($error_response));
+	}
+	private function deleteException($json_response)
+	{
+		$error_response = json_decode($json_response);
+		$error_response = collect($error_response->data);
+		$error_response = $error_response->first();
+		$this->setStatus('error');
+		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+	}
+
+	/**
+	 * Parse response
+	 */
+	private function refreshToken($json_response)
+	{
+		return $this->setSuccessResponse($json_response);
+	}
+
+	private function get($json_response)
+	{
+		return $this->search($json_response);
+	}
+
+	private function search($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function recordList($json_response)
+	{
+		return $this->search($json_response);
+	}
+
+	private function specificRecord($json_response)
+	{
+		return $this->search($json_response);
+	}
+
+	private function insert($json_response)
+	{
+		if ($this->http_status_code == 201) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 400) {
+			$this->yieldException($json_response);
+		}
+
+		if ($this->http_status_code == 403) {
+			$this->yieldException($json_response);
+		}
+
+		$this->insertException($json_response);
+	}
+
+	private function update($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 400) {
+			$this->yieldException($json_response);
+		}
+
+		$this->updateException($json_response);
+	}
+
+	private function bulkUpdate($json_response)
+	{
+		return $this->update($json_response);
+	}
+
+	private function upsert($json_response)
+	{
+		return $this->update($json_response);
+	}
+
+	private function delete($json_response)
+	{ 
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 400) {
+			$this->yieldException($json_response);
+		}
+
+		$this->deleteException($json_response);
+	}
+
+	private function bulkDelete($json_response)
+	{
+		return $this->delete($json_response);
+	}
+
+
 
 	/**
 	 * Check HTTP status code (silent/No exceptions!)
