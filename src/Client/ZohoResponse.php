@@ -122,7 +122,12 @@ class ZohoResponse
 
 	private function get($json_response)
 	{
-		return $this->search($json_response);
+		return $this->recordResponse($json_response);
+	}
+
+	private function post($json_response)
+	{
+		return $this->recordResponse($json_response);
 	}
 
 	//Record Response

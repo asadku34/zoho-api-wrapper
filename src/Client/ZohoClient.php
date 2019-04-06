@@ -73,7 +73,7 @@ class ZohoClient
         return new ZohoResponse($res, $action);
     }
 
-    public function post($url, $action='')
+    public function post($url, $action='post')
     {
         try {
             $res = $this->client->request('POST', $url);

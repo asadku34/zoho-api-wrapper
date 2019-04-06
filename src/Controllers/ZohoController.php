@@ -25,10 +25,16 @@ class ZohoController extends Controller
 
 				$request_url 	= 'https://accounts.zoho.com/oauth/v2/token?code='.$code.'&redirect_uri='.$redirect_url.'&client_id='.$client_id.'&client_secret='.$client_secret.'&grant_type=authorization_code';
                 
-                $crm_response = $this->getClient()->post($request_url)->getResults();
-        
+                try {
+                    $crm_response = $this->getClient()->post($request_url);
+                    $crm_response = $crm_response->getResults();
+                } catch (ZohoException $e) {
+                    $crm_response = null;
+                    echo $e->getMessage();
+                }
+                
                 if (isset($crm_response->error)) {
-                    throw new ZohoException($crm_response->error);
+                    return json_encode(['status' => 'failed', 'message' => $crm_response->error]);
                 }
                 
 				if($crm_response != null && isset($crm_response->access_token)){
