@@ -125,16 +125,21 @@ class ZohoResponse
 		return $this->search($json_response);
 	}
 
-	private function search($json_response)
+	//Record Response
+	private function recordResponse($json_response)
 	{
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
+		$this->yieldException($json_response);
+	}
 
+	private function search($json_response)
+	{
 		if ($this->http_status_code == 204) {
 			$this->noContentException();
 		}
-		$this->yieldException($json_response);
+		return $this->recordResponse($json_response);
 	}
 
 	private function recordList($json_response)
@@ -205,6 +210,42 @@ class ZohoResponse
 		return $this->delete($json_response);
 	}
 
+	//Process Meta Data Response
+	private function metaResponse($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function allModules($json_response)
+	{
+		return $this->metaResponse($json_response);
+	}
+
+	private function moduleMeta($json_response)
+	{
+		return $this->metaResponse($json_response);
+	}
+
+	private function fieldMeta($json_response)
+	{
+		return $this->metaResponse($json_response);
+	}
+
+	private function layoutMeta($json_response)
+	{
+		return $this->metaResponse($json_response);
+	}
+
+	private function layoutMetaById($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		return $this->metaResponse($json_response);
+	}
 
 
 	/**

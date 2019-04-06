@@ -166,7 +166,7 @@ class ZohoRequest
         }
 
         if ($action == 'layout-meta-id') {
-            $this->setAction('Layout Meta By ID');
+            $this->setAction('Layout Meta By Id');
             $this->setHttpVerb('GET');
             $layout_id = $param[1];
             $param = $param[0];
@@ -181,8 +181,10 @@ class ZohoRequest
         if (strtolower($criteria) == 'email') {
             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $response = [
-                    'status' => 'error',
-                    'data' => 'Invalid Email Address'
+                    'code' 		=> 'IVALID_EMAIL',
+                    'details' 	=> [],
+                    'message' 	=> 'There is no content available for the request.',
+                    'status' 	=> 'error',
                 ];
                 throw new RequestException('Please input a valid email', json_encode($response));
             }
