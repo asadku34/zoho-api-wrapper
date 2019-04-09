@@ -173,6 +173,50 @@ class ZohoRequest
             $this->URI = implode('', $param) ."layouts/". $layout_id ."?module=". $this->module;
         }
 
+        //Note Api
+        if ($action == 'notes-data') {
+            $this->setAction('Notes Data');
+            $this->setHttpVerb('GET');
+            $this->URI = $this->module;
+        }
+
+        if ($action == 'create-notes') {
+            $this->setAction('Create Notes');
+            $this->setHttpVerb('POST');
+            $this->setDataJson($param);
+            $this->URI = $this->module;
+        }
+
+        if ($action == 'create-specific-note') {
+            $this->setAction('Create Specific Note');
+            $this->setHttpVerb('POST');
+            $extension = $param['extension'];
+            unset($param['extension']);
+            $this->setDataJson($param);
+            $this->URI = $extension . $this->module;
+        }
+
+        if ($action == 'get-specific-notes') {
+            $this->setAction('Get Specific Notes');
+            $this->setHttpVerb('GET');
+            $this->URI = $param['extension'] . $this->module;
+        }
+
+        if ($action == 'update-note') {
+            $this->setAction('Update Note');
+            $this->setHttpVerb('PUT');
+            $extension = $param['extension'];
+            unset($param['extension']);
+            $this->setDataJson($param);
+            $this->URI = $extension;
+        }
+
+        if ($action == 'delete-specific-note') {
+            $this->setAction('Delete Specific Note');
+            $this->setHttpVerb("DELETE");
+            $this->URI = $param['extension'];
+        }
+
         return $this->parameter;
     }
 

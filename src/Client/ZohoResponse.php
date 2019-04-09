@@ -69,6 +69,17 @@ class ZohoResponse
 
 	private function yieldException($json_response)
 	{
+		if ($this->http_status_code == 500) {
+			$this->internalServerException($json_response);
+		}
+
+		$error_response = json_decode($json_response);
+		$this->setStatus('error');
+		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+	}
+
+	private function internalServerException($json_response)
+	{
 		$error_response = json_decode($json_response);
 		$this->setStatus('error');
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
@@ -180,11 +191,12 @@ class ZohoResponse
 			return $this->setSuccessResponse($json_response);
 		}
 
-		if ($this->http_status_code == 400) {
-			$this->yieldException($json_response);
+		if ($this->http_status_code == 202) {
+			$this->updateException($json_response);
 		}
 
-		$this->updateException($json_response);
+		$this->yieldException($json_response);
+
 	}
 
 	private function bulkUpdate($json_response)
@@ -250,6 +262,89 @@ class ZohoResponse
 			$this->noContentException();
 		}
 		return $this->metaResponse($json_response);
+	}
+
+	//Process Notes api
+	private function noteResponse($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function deleteNoteException($json_response)
+	{
+		$error_response = json_decode($json_response);
+		$error_response = collect($error_response->data);
+		$error_response = $error_response->first();
+		$this->setStatus('error');
+		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+	}
+
+	private function notesData($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			return $this->noContentException();
+		}
+		return $this->noteResponse($json_response);
+	}
+
+	private function getSpecificNotes($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		return $this->noteResponse($json_response);
+	}
+
+	private function createNotes($json_response)
+	{
+		
+		if ($this->http_status_code == 201) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 400) {
+			$this->yieldException($json_response);
+		}
+
+		if ($this->http_status_code == 403) {
+			$this->yieldException($json_response);
+		}
+
+		$this->insertException($json_response);
+	}
+
+	private function createSpecificNote($json_response)
+	{
+		return $this->createNotes($json_response);
+	}
+
+	private function updateNote($json_response)
+	{
+
+		if ($this->http_status_code == 202) {
+			return $this->updateException($json_response);
+		}
+
+		$this->noteResponse($json_response);
+	}
+
+	private function deleteSpecificNote($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			$delete_response = json_decode($json_response);
+			$delete_response = collect($delete_response->data);
+			$delete_response = $delete_response->first();
+			if ($delete_response->status == 'error') {
+				$this->http_status_code = 400;
+				$this->deleteNoteException($json_response);
+			}
+			return $this->noteResponse($json_response);
+		}
+
+		$this->yieldException($json_response);
 	}
 
 
