@@ -76,9 +76,13 @@ class ZohoRequest
         }
 
         if ($action === 'list_of_record') {
+            foreach ($param as $key => $val) {
+                $this->validateParam($key, $val);
+                $this->parameter[$key] = $val;
+            }
             $this->setAction('Record List');
             $this->setHttpVerb('GET');
-            $this->URI = $this->module;
+            $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());
         }
 
         if ($action == 'specific_record') {

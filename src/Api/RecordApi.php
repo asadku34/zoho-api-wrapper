@@ -14,9 +14,9 @@ class RecordApi extends RestApi
      * @param $module = 'Leads'
      * 
      */
-    public function listOfRecords($module)
+    public function listOfRecords($module, array $param=[])
     {
-        $request = $this->createRequest('list_of_record', $module, []);
+        $request = $this->createRequest('list_of_record', $module, $param);
         return $this->makeRequest($request);
     }
 
