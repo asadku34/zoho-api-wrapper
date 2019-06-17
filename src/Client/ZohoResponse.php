@@ -233,6 +233,11 @@ class ZohoResponse
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
+		
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		
 		$this->yieldException($json_response);
 	}
 
