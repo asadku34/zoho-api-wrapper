@@ -221,6 +221,53 @@ class ZohoRequest
             $this->URI = $param['extension'];
         }
 
+        //Tag Api
+        if ($action == 'tags-list') {
+            $this->setAction('Tag List');
+            $this->setHttpVerb('GET');
+            $this->URI = 'settings/tags?module='.$this->module;
+        }
+
+        if ($action == 'create-tags') {
+            $this->setAction('Create Tags');
+            $this->setHttpVerb('POST');
+            $this->setDataJson($param);
+            $this->URI = 'settings/tags?module='.$this->module;
+        }
+
+        if ($action == 'update-tags') {
+            $this->setAction('Update Tags');
+            $this->setHttpVerb('PUT');
+            $tag_id = $param['z_tag_id'];
+            unset($param['z_tag_id']);
+            $this->setDataJson($param);
+            $this->URI = 'settings/tags/'. $tag_id .'?module='. $this->module;
+        }
+
+        if ($action == 'remove-tags') {
+            $this->setAction('Remove Tags');
+            $this->setHttpVerb('DELETE');
+            $this->URI = 'settings/tags/'. implode('', $param);
+        }
+
+        if ($action == 'create-specific-tags') {
+            $this->setAction('Create Specific Tags');
+            $this->setHttpVerb('POST');
+            $record_id = $param['z_record_id'];
+            unset($param['z_record_id']);
+            $this->setDataJson($param);
+            $this->URI = $this->module .'/'. $record_id .'/actions/add_tags?tag_names='.implode(',', $param);
+        }
+
+        if ($action == 'remove-specific-tags') {
+            $this->setAction('Remove Specific Tags');
+            $this->setHttpVerb('POST');
+            $record_id = $param['z_record_id'];
+            unset($param['z_record_id']);
+            $this->setDataJson($param);
+            $this->URI = $this->module .'/'. $record_id .'/actions/remove_tags?tag_names='.implode(',', $param);
+        }
+
         return $this->parameter;
     }
 

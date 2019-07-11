@@ -352,6 +352,78 @@ class ZohoResponse
 		$this->yieldException($json_response);
 	}
 
+	//Process Tag Api
+	private function tagResponse($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function tagList($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		return $this->tagResponse($json_response);
+	}
+
+	private function createTags($json_response)
+	{
+		
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 201) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		$this->yieldException($json_response);
+	}
+
+	private function updateTags($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 201) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		$this->yieldException($json_response);
+	}
+
+	private function removeTags($json_response)
+	{
+		
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 201) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 400) {
+			return $this->yieldException($json_response);
+		}
+
+		$this->yieldException($json_response);
+	}
+
+	private function createSpecificTags($json_response)
+	{
+		return $this->createTags($json_response);
+	}
+
+	private function removeSpecificTags($json_response)
+	{
+		return $this->createTags($json_response);
+	}
+
 
 	/**
 	 * Check HTTP status code (silent/No exceptions!)
