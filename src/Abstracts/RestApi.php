@@ -3,10 +3,10 @@ namespace Asad\Zoho\Abstracts;
 
 use Asad\Zoho\ZohoApi;
 use Asad\Zoho\Client\ZohoRequest;
+use Asad\Zoho\Client\ZohoResponse;
 
 abstract class RestApi
 {
-    protected $zoho_api = null;
     public function __construct($cofig_id)
     {
         $this->setZohoApi(new ZohoApi($cofig_id));
@@ -26,7 +26,7 @@ abstract class RestApi
     /**
      * @return ZohoApi
      */
-    public function getZohoApi():ZohoApi
+    public function getZohoApi(): ZohoApi
     {
         return $this->zoho_api;
     }
@@ -34,7 +34,7 @@ abstract class RestApi
     /**
      * @param string $action = 'search'
      * 
-     * @param string $module = 'lead'
+     * @param string $module = 'Leads'
      * 
      * @param array $param = ['email' => 'test@gmail.com']
      * 
@@ -50,7 +50,7 @@ abstract class RestApi
      * 
      * @return ZohoApi response
      */
-    public function makeRequest(ZohoRequest $request)
+    public function makeRequest(ZohoRequest $request): ZohoResponse
     {
         return $this->getZohoApi()->get($request);
     }

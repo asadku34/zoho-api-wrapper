@@ -3,7 +3,6 @@
 namespace Asad\Zoho\Client;
 
 use Asad\Zoho\Exception\ResponseException;
-use Asad\Zoho\HttpStatus\HttpStatus;
 use GuzzleHttp\Psr7\Response;
 
 class ZohoResponse
@@ -233,11 +232,11 @@ class ZohoResponse
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
-		
+
 		if ($this->http_status_code == 204) {
 			$this->noContentException();
 		}
-		
+
 		$this->yieldException($json_response);
 	}
 
@@ -422,6 +421,95 @@ class ZohoResponse
 	private function removeSpecificTags($json_response)
 	{
 		return $this->createTags($json_response);
+	}
+
+	//Process attachments api
+	private function listOfAttachments($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function uploadAttachment($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+	
+	private function deleteAttachment($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function downloadAttachment($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			$this->results = $json_response;
+			$this->setStatus('success');
+			return $this;
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function uploadImages($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function downloadImages($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			$this->results = $json_response;
+			$this->setStatus('success');
+			return $this;
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function deleteImages($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
 	}
 
 

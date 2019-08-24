@@ -2,11 +2,6 @@
 
 namespace Asad\Zoho\Exception;
 
-use Psr\Http\Message\UriInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\PromiseInterface;
-
 use Exception;
 
 class ZohoException extends Exception

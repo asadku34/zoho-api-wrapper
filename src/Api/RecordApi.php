@@ -2,7 +2,6 @@
 namespace Asad\Zoho\Api;
 
 use Asad\Zoho\Abstracts\RestApi;
-use Asad\Zoho\Client\ZohoRequest;
 
 class RecordApi extends RestApi
 {

@@ -1,9 +1,8 @@
 <?php
 namespace Asad\Zoho;
 
-use Illuminate\Database\Eloquent\Model;
 use Asad\Zoho\Client\ZohoClient;
-use Asad\Zoho\Exception\ZohoException;
+use Asad\Zoho\Exception\AuthenticationException;
 use Asad\Zoho\Models\ZohoOauthSetting;
 
 class Authentication
@@ -28,7 +27,6 @@ class Authentication
     public function __construct($config_id = null, string $scope = null)
     {
         $this->setScope($scope);
-        $this->setAccessToken($config_id);
     }
 
     public function makeRedirectUrl($client_id, $redirect_route)
@@ -55,16 +53,15 @@ class Authentication
     {
         try {
             $this->validAccessToken($config_id);
-        } catch (ZohoException $e) {
-            echo $e->getMessage();
-            exit;
+        } catch (AuthenticationException $e) {
+            throw new AuthenticationException($e->getMessage());
         }
         
     }
 
-    public function getAccessToken(): string 
+    public function getAccessToken(): String 
     {
-        return $this->access_token;
+        return ($this->access_token == null) ? '' : $this->access_token;
     }
 
     public function validAccessToken($config_id)
@@ -76,17 +73,16 @@ class Authentication
         }
 
         if (is_null($setting)) {
-            throw new ZohoException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
+            throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
         }
 
         $now = time() + 300; // Generate Refresh Token before five minutes.
         if($setting->expires_in_sec <= $now){
             try {
                 $this->refreshAccessToken($setting);
-            } catch (ZohoException $e) {
-                echo $e->getMessage(); 
-                echo "<br>It's seems something happened to your refresh token.";
-                exit;
+            } catch (AuthenticationException $e) {
+                $additional_msg = "It's seems something happened to your refresh token.";
+                throw new AuthenticationException($e->getMessage()." - ".$additional_msg);
             }
         }else{
             $this->access_token = $setting->access_token;
@@ -106,7 +102,7 @@ class Authentication
         $response = $this->getClient()->post($refresh_url, 'refreshToken')->getResults();
         
         if (isset($response->error)) {
-            throw new ZohoException($response->error);
+            throw new AuthenticationException($response->error);
         }
 
         $setting = ZohoOauthSetting::find($id);

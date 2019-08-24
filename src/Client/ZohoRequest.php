@@ -3,6 +3,7 @@
 namespace Asad\Zoho\Client;
 
 use Asad\Zoho\Exception\RequestException;
+
 class ZohoRequest
 {
     /**
@@ -62,16 +63,19 @@ class ZohoRequest
         return $this->http_verb;
     }
 
+    /**
+     * Processing Api request
+     */
     public function processRequest($action, $param): array
     {
         $this->parameter = [];
+        // Record Api
         if ($action === 'search') {
             foreach ($param as $key => $val) {
                 $this->validateParam($key, $val);
                 $this->parameter[$key] = $val;
             }
-            $this->setAction($action);
-            $this->setHttpVerb('GET');
+            $this->setActionVerb($action, 'GET');
             $this->URI = str_replace('/?', '?', $this->module ."/". $this->action ."?". $this->getQuery());
         }
 
@@ -80,34 +84,29 @@ class ZohoRequest
                 $this->validateParam($key, $val);
                 $this->parameter[$key] = $val;
             }
-            $this->setAction('Record List');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Record List', 'GET');
             $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());
         }
 
         if ($action == 'specific_record') {
-            $this->setAction('Specific Record');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Specific Record', 'GET');
             $this->URI = $this->module ."/". implode('',$param);
         }
 
         if ($action == 'insert') {
-            $this->setAction('Insert');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Insert', 'POST');
             $this->setDataJson($param);
             $this->URI = $this->module;
         }
 
         if ($action == 'b-update') {
-            $this->setAction('Bulk Update');
-            $this->setHttpVerb('PUT');
+            $this->setActionVerb('Bulk Update', 'PUT');
             $this->setDataJson($param);
             $this->URI = $this->module;
         }
         
         if ($action == 'update') {
-            $this->setAction('Update');
-            $this->setHttpVerb('PUT');
+            $this->setActionVerb('Update', 'PUT');
             $record_id = $param['record_id'];
             unset($param['record_id']);
             $this->setDataJson($param);
@@ -115,21 +114,18 @@ class ZohoRequest
         }
 
         if ($action == 'upsert') {
-            $this->setAction('Upsert');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Upsert', 'POST');
             $this->setDataJson($param);
             $this->URI = $this->module ."/upsert";
         }
 
         if ($action == 'b-delete') {
-            $this->setAction('Bulk Delete');
-            $this->setHttpVerb('DELETE');
+            $this->setActionVerb('Bulk Delete', 'DELETE');
             $this->URI = $this->module ."?ids=". implode(',', $param); 
         }
 
         if ($action == 'delete') {
-            $this->setAction('Delete');
-            $this->setHttpVerb('DELETE');
+            $this->setActionVerb('Delete', 'DELETE');
             $this->URI = $this->module ."/". implode('',$param);
         }
 
@@ -137,41 +133,35 @@ class ZohoRequest
             foreach ($param as $key => $val) {
                 $this->parameter[$key] = $val;
             }
-            $this->setAction('Deleted');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Deleted', 'GET');
             $this->URI = $this->module ."/". $this->action ."?". $this->getQuery();
         }
 
         // Get Module List
         if ($action == 'modules') {
-            $this->setAction('All Modules');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('All Modules', 'GET');
             $this->URI = implode('', $param) . $this->module;
         }
 
-        //Meta Data Processing
+        //Meta Data Api
 
         if ($action == 'module-meta') {
-            $this->setAction('Module Meta');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Module Meta', 'GET');
             $this->URI = implode('', $param) ."modules/". $this->module;
         }
 
         if ($action == 'field-meta') {
-            $this->setAction('Field Meta');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Field Meta', 'GET');
             $this->URI = implode('', $param) ."fields?module=". $this->module;
         }
 
         if ($action == 'layout-meta') {
-            $this->setAction('Layout Meta');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Layout Meta', 'GET');
             $this->URI = implode('', $param) ."layouts?module=". $this->module;
         }
 
         if ($action == 'layout-meta-id') {
-            $this->setAction('Layout Meta By Id');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Layout Meta By Id', 'GET');
             $layout_id = $param[1];
             $param = $param[0];
             $this->URI = implode('', $param) ."layouts/". $layout_id ."?module=". $this->module;
@@ -179,21 +169,18 @@ class ZohoRequest
 
         //Note Api
         if ($action == 'notes-data') {
-            $this->setAction('Notes Data');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Notes Data', 'GET');
             $this->URI = $this->module;
         }
 
         if ($action == 'create-notes') {
-            $this->setAction('Create Notes');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Create Notes', 'POST');
             $this->setDataJson($param);
             $this->URI = $this->module;
         }
 
         if ($action == 'create-specific-note') {
-            $this->setAction('Create Specific Note');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Create Specific Note', 'POST');
             $extension = $param['extension'];
             unset($param['extension']);
             $this->setDataJson($param);
@@ -201,14 +188,12 @@ class ZohoRequest
         }
 
         if ($action == 'get-specific-notes') {
-            $this->setAction('Get Specific Notes');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Get Specific Notes', 'GET');
             $this->URI = $param['extension'] . $this->module;
         }
 
         if ($action == 'update-note') {
-            $this->setAction('Update Note');
-            $this->setHttpVerb('PUT');
+            $this->setActionVerb('Update Note', 'PUT');
             $extension = $param['extension'];
             unset($param['extension']);
             $this->setDataJson($param);
@@ -216,28 +201,24 @@ class ZohoRequest
         }
 
         if ($action == 'delete-specific-note') {
-            $this->setAction('Delete Specific Note');
-            $this->setHttpVerb("DELETE");
+            $this->setActionVerb('Delete Specific Note', 'DELETE');
             $this->URI = $param['extension'];
         }
 
         //Tag Api
         if ($action == 'tags-list') {
-            $this->setAction('Tag List');
-            $this->setHttpVerb('GET');
+            $this->setActionVerb('Tag List', 'GET');
             $this->URI = 'settings/tags?module='.$this->module;
         }
 
         if ($action == 'create-tags') {
-            $this->setAction('Create Tags');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Create Tags', 'POST');
             $this->setDataJson($param);
             $this->URI = 'settings/tags?module='.$this->module;
         }
 
         if ($action == 'update-tags') {
-            $this->setAction('Update Tags');
-            $this->setHttpVerb('PUT');
+            $this->setActionVerb('Update Tags', 'PUT');
             $tag_id = $param['z_tag_id'];
             unset($param['z_tag_id']);
             $this->setDataJson($param);
@@ -245,14 +226,12 @@ class ZohoRequest
         }
 
         if ($action == 'remove-tags') {
-            $this->setAction('Remove Tags');
-            $this->setHttpVerb('DELETE');
+            $this->setActionVerb('Remove Tags', 'DELETE');
             $this->URI = 'settings/tags/'. implode('', $param);
         }
 
         if ($action == 'create-specific-tags') {
-            $this->setAction('Create Specific Tags');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Create Specific Tags', 'POST');
             $record_id = $param['z_record_id'];
             unset($param['z_record_id']);
             $this->setDataJson($param);
@@ -260,17 +239,69 @@ class ZohoRequest
         }
 
         if ($action == 'remove-specific-tags') {
-            $this->setAction('Remove Specific Tags');
-            $this->setHttpVerb('POST');
+            $this->setActionVerb('Remove Specific Tags', 'POST');
             $record_id = $param['z_record_id'];
             unset($param['z_record_id']);
             $this->setDataJson($param);
             $this->URI = $this->module .'/'. $record_id .'/actions/remove_tags?tag_names='.implode(',', $param);
         }
 
+        //Attachments Api
+        if ($action == 'list-of-attachments') {
+            $this->setActionVerb('List Of Attachments', 'GET');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+        if ($action == 'delete-attachment') {
+            $this->setActionVerb('Delete Attachment', 'DELETE');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+        
+        if ($action == 'download-attachment') {
+            $this->setActionVerb('Download Attachment', 'GET');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+
+        if ($action == 'download-images') {
+            $this->setActionVerb('Download Images', 'GET');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+
+        if ($action == 'upload-attachment') {
+            $this->setActionVerb('Upload Attachment', 'POST');
+            $extension = $param['extension'];
+            unset($param['extension']);
+            $this->setDataJson($param);
+            $this->URI = $this->module ."/". $extension;
+        }
+
+        if ($action == 'upload-images') {
+            $this->setActionVerb('Upload Images', 'POST');
+            $extension = $param['extension'];
+            unset($param['extension']);
+            $this->setDataJson($param);
+            $this->URI = $this->module ."/". $extension;
+        }
+
+        if ($action == 'delete-images') {
+            $this->setActionVerb('Delete Images', 'DELETE');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+
         return $this->parameter;
     }
 
+    /**
+     * Set both action and http verb
+     */
+    public function setActionVerb($action, $verb)
+    {
+        $this->setAction($action);
+        $this->setHttpVerb($verb);
+    }
+
+    /**
+     * Valid email address before make request
+     */
     public function validateParam($criteria, $value)
     {
         if (strtolower($criteria) == 'email') {
@@ -310,6 +341,4 @@ class ZohoRequest
     {
         return $this->data_json;
     }
-
-
 }

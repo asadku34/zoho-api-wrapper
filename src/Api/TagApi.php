@@ -49,6 +49,5 @@ class TagApi extends RestApi
         $request = $this->createRequest('remove-specific-tags', $module, $param);
         return $this->makeRequest($request);
     }
-    
 
 }

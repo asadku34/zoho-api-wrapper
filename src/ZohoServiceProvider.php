@@ -35,9 +35,7 @@ class ZohoServiceProvider extends ServiceProvider
         
     }
 
-
-
-     /**
+    /**
      * Register the package resources.
      *
      * @return void

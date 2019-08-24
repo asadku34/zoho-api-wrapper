@@ -5,7 +5,6 @@ namespace Asad\Zoho\Command;
 use Illuminate\Console\Command;
 
 use Asad\Zoho\Models\ZohoOauthSetting;
-use Asad\Zoho\Controllers\ZohoController;
 
 class ZohoAuthentication extends Command
 {
@@ -52,6 +51,7 @@ class ZohoAuthentication extends Command
         $client_secret  = $this->ask('Input CRM client secret');
         $client_domain  = $this->ask('Input client domain (ex: example.com)');
         $protocol       = $this->choice('Select your protocol.', ['http', 'https'], 0);
+        $environment    = $this->choice('Select your env.', ['sandbox', 'live'], 0);
         $redirect_route =  $protocol .'://'. rtrim($client_domain, '/') . '/oauth2back';
 
         $redirect_url = 'https://accounts.zoho.com/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL&client_id='.$client_id.'&response_type=code&access_type=offline&redirect_uri='.$redirect_route;
@@ -63,10 +63,11 @@ class ZohoAuthentication extends Command
                 'client_secret'     => $client_secret,
                 'client_domain'     => $client_domain,
                 'protocol'          => $protocol,
+                'connect_to'        => $environment,
             ]
         );
 
-        $this->info('Copy the following url, past on browser and hit return.');
+        $this->info('Copy the following url, paste on browser and hit return.');
         $this->line($redirect_url);
     }
 }

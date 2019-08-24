@@ -2,11 +2,7 @@
 namespace Asad\Zoho\Client;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
-use GuzzleHttp\TransferStats;
 
 use Asad\Zoho\Client\ZohoResponse;
 use Asad\Zoho\Exception\ZohoException;
@@ -38,6 +34,11 @@ class ZohoClient
         if ($data !== null) {
             $data_header['json'] = $data;
         }
+
+        if (isset($data['multipart'])) {
+            $data_header = $data;
+        }
+
         $data_header['headers'] = [
                 'Accept' => 'application/json',
                 'Content-Length' => '0',
