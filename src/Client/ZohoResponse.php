@@ -512,6 +512,45 @@ class ZohoResponse
 		$this->yieldException($json_response);
 	}
 
+	//Process relatedlist api
+	private function relatedlistRecords($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function updateRelatedlist($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 202) {
+			$this->updateException($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function removeRelatedlist($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+
+		if ($this->http_status_code == 202) {
+			$this->updateException($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	
+
 
 	/**
 	 * Check HTTP status code (silent/No exceptions!)

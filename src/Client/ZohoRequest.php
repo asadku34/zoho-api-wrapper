@@ -287,6 +287,25 @@ class ZohoRequest
             $this->URI = $this->module ."/". $param['extension'];
         }
 
+        //RelatedList API
+        if ($action == 'get-relatedlist') {
+            $this->setActionVerb('Relatedlist Records', 'GET');
+            $this->URI = $this->module ."/". $param['extension'];
+        }
+
+        if ($action == 'update-relatedlist') {
+            $this->setActionVerb('Update Relatedlist', 'PUT');
+            $uri_extension = $param['extension'];
+            unset($param['extension']);
+            $this->setDataJson($param);
+            $this->URI = $this->module ."/". $uri_extension;
+        }
+
+        if ($action == 'remove-relatedlist') {
+            $this->setActionVerb('Remove Relatedlist', 'DELETE');
+            $this->URI = $this->module ."/".$param['extension'];
+        }
+
         return $this->parameter;
     }
 
