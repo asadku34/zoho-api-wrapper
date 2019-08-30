@@ -30,20 +30,23 @@ class ZohoClient
 
     public function execute($action, $http_verb, $url, $access_token, array $data = null)
     {
+        $data_header['headers'] = [
+            'Accept' => 'application/json',
+            'Content-Length' => '0',
+            'Authorization' => 'Zoho-oauthtoken '.$access_token
+        ];
 
-        if ($data !== null) {
-            $data_header['json'] = $data;
+        if (isset($data['headers'])) {
+            $data_header['headers'] = array_merge($data_header['headers'], $data['headers']);
+        }
+
+        if ($data !== null && isset($data['data'])) {
+            $data_header['json'] = $data['data'];
         }
 
         if (isset($data['multipart'])) {
-            $data_header = $data;
+            $data_header = $data['multipart'];
         }
-
-        $data_header['headers'] = [
-                'Accept' => 'application/json',
-                'Content-Length' => '0',
-                'Authorization' => 'Zoho-oauthtoken '.$access_token
-        ];
 
         try {
             $res = $this->client->request($http_verb, $url, $data_header);

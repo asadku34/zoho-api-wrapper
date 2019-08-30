@@ -41,15 +41,6 @@ class RelatedListApi extends RestApi
         return $this->makeRequest($request);
     }
 
-    /**
-     * @param string $module Zoho crm Module name
-     * @param string $record_id Module record Id
-     * @param string $who_related Mentions those related list
-     * @param string $related_record_id
-     * 
-     * @return laravel collection
-     */
-
     public function removeRelatedList($module, $record_id, $related_list, $related_record_id)
     {
         $param['extension'] = $record_id ."/". $related_list ."/". $related_record_id;

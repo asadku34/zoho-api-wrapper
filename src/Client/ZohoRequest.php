@@ -80,9 +80,15 @@ class ZohoRequest
         }
 
         if ($action === 'list_of_record') {
-            foreach ($param as $key => $val) {
+            $data_param = isset($param['data']) ? $param['data'] : $param;
+            foreach ($data_param as $key => $val) {
                 $this->validateParam($key, $val);
                 $this->parameter[$key] = $val;
+            }
+            
+            if (isset($param['headers'])) {
+                $request_header['headers'] = $param['headers'];
+                $this->setDataJson($request_header);
             }
             $this->setActionVerb('Record List', 'GET');
             $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());

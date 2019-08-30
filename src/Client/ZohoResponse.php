@@ -84,16 +84,16 @@ class ZohoResponse
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
-	private function noContentException()
+	private function noContentException($message = 'There is no content available for the request.')
 	{
 		$this->setStatus("error");
 		$error_response = [
 			'code' 		=> 'NO_CONTENT',
 			'details' 	=> [],
-			'message' 	=> 'There is no content available for the request.',
+			'message' 	=> $message,
 			'status' 	=> 'success',
 		];
-		throw new ResponseException("There is no content available for the request.", $this->http_status_code, json_encode($error_response));
+		throw new ResponseException($message, $this->http_status_code, json_encode($error_response));
 	}
 
 	private function insertException($json_response)
@@ -159,6 +159,10 @@ class ZohoResponse
 
 	private function recordList($json_response)
 	{
+		if ($this->http_status_code == 304) {
+			$exception_message = 'The requested page has not been modified. In case "If-Modified-Since" header is used for GET APIs';
+			$this->noContentException($exception_message);
+		}
 		return $this->search($json_response);
 	}
 
