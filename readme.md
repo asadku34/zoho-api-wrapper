@@ -111,4 +111,4 @@ If you discover any issues, please email at [asadku34@gmail.com](mailto:asadku34
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/asad/laravel-zoho-api-wrapper/blob/master/LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/asadku34/zoho-api-wrapper/blob/master/LICENSE) for more information.
