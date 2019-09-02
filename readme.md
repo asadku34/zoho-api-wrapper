@@ -86,7 +86,7 @@ Class ZohoController extends Controller
 ```
 
 ## APIs
-Currently there are only 6 api wrappers.
+Currently there are only 7 api wrappers.
 Those are follows:
 - Record APIs
 - Meta Data APIs (It also belong Module API)
@@ -94,6 +94,7 @@ Those are follows:
 - Related List APIs
 - Tag APIs
 - Attachments APIs
+- Query APIs
 
 ## Contributing
 
