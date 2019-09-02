@@ -38,7 +38,7 @@ class Authentication
 
     public function setScope(string $scope = null): Authentication
     {
-        $this->scope = $scope ?? "ZohoCRM.modules.ALL,ZohoCRM.settings.ALL";
+        $this->scope = $scope ?? "ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ";
         return $this;
     }
 

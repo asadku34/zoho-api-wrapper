@@ -312,6 +312,13 @@ class ZohoRequest
             $this->URI = $this->module ."/".$param['extension'];
         }
 
+        // CRM Object Query Language
+        if ($action == 'crm-object-query-language') {
+            $this->setActionVerb('Query Language', 'POST');
+            $this->setDataJson($param);
+            $this->URI = $this->module;
+        }
+
         return $this->parameter;
     }
 

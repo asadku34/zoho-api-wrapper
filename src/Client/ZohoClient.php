@@ -44,6 +44,10 @@ class ZohoClient
             $data_header['json'] = $data['data'];
         }
 
+        if ($data !== null && isset($data['select_query'])) {
+            $data_header['json'] = $data['select_query'];
+        }
+
         if (isset($data['multipart'])) {
             $data_header = $data['multipart'];
         }
