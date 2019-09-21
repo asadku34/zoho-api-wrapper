@@ -80,16 +80,20 @@ class ZohoRequest
         }
 
         if ($action === 'list_of_record') {
-            $data_param = isset($param['data']) ? $param['data'] : $param;
-            foreach ($data_param as $key => $val) {
-                $this->validateParam($key, $val);
-                $this->parameter[$key] = $val;
-            }
-            
+
             if (isset($param['headers'])) {
                 $request_header['headers'] = $param['headers'];
                 $this->setDataJson($request_header);
+                unset($param['headers']);
             }
+
+            $data_param = isset($param['data']) ? $param['data'] : $param;
+            $data_param = (isset($data_param[0]) && is_array($data_param[0])) ? $data_param[0] : $data_param;
+            
+            foreach ($data_param as $key => $val) {
+                $this->parameter[$key] = $val;
+            }
+            
             $this->setActionVerb('Record List', 'GET');
             $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());
         }
@@ -315,7 +319,13 @@ class ZohoRequest
         // CRM Object Query Language
         if ($action == 'crm-object-query-language') {
             $this->setActionVerb('Query Language', 'POST');
-            $this->setDataJson($param);
+            if (isset($param['data'])) {
+                $this->setDataJson($param['data']);
+            } elseif (isset($param['select_query'])) {
+                $this->setDataJson($param);
+            } else {
+                throw new RequestException('Invalid Query Input');
+            }
             $this->URI = $this->module;
         }
 

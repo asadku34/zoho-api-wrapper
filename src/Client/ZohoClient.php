@@ -3,7 +3,6 @@ namespace Asad\Zoho\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
-
 use Asad\Zoho\Client\ZohoResponse;
 use Asad\Zoho\Exception\ZohoException;
 
@@ -28,29 +27,38 @@ class ZohoClient
         return $this->client;
     }
 
-    public function execute($action, $http_verb, $url, $access_token, array $data = null)
+    public function prepareDataHeader($access_token)
     {
-        $data_header['headers'] = [
+        return [
             'Accept' => 'application/json',
             'Content-Length' => '0',
             'Authorization' => 'Zoho-oauthtoken '.$access_token
         ];
+    }
 
+    public function getDataHeader($access_token, $data = null)
+    {
+        $data_headers['headers'] = $this->prepareDataHeader($access_token);
         if (isset($data['headers'])) {
-            $data_header['headers'] = array_merge($data_header['headers'], $data['headers']);
-        }
-
-        if ($data !== null && isset($data['data'])) {
-            $data_header['json'] = $data['data'];
-        }
-
-        if ($data !== null && isset($data['select_query'])) {
-            $data_header['json'] = $data['select_query'];
+            $data_headers['headers'] = array_merge($data_headers['headers'], $data['headers']);
+            unset($data['headers']);
         }
 
         if (isset($data['multipart'])) {
-            $data_header = $data['multipart'];
+            $data_headers = array_merge($data_headers, $data);
+            unset($data['multipart']);
+        } elseif ($data) {
+            $data_headers['json'] = $data;
         }
+
+        return $data_headers;
+
+    }
+
+    public function execute($action, $http_verb, $url, $access_token, array $data = null)
+    {
+
+        $data_header = $this->getDataHeader($access_token, $data);
 
         try {
             $res = $this->client->request($http_verb, $url, $data_header);
