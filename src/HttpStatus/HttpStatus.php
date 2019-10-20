@@ -7,19 +7,19 @@ class HttpStatus
     private static $http_status = [
         '200' => [
             'status' => 'OK',
-            'data' => 'The API request is successful.'
+            'data'   => 'The API request is successful.',
         ],
         '204' => [
             'status' => 'NO CONTENT',
-            'data' => 'There is no content available for the request.'
+            'data'   => 'There is no content available for the request.',
         ],
         '400' => [
             'status' => 'BAD REQUEST',
-            'data' => 'The request or the authentication considered is invalid.'
+            'data'   => 'The request or the authentication considered is invalid.',
         ],
         '401' => [
             'status' => 'AUTHORIZATION ERROR',
-            'data' => 'Invalid API key provided.'
+            'data'   => 'Invalid API key provided.',
         ],
     ];
 

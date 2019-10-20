@@ -8,7 +8,9 @@ class ZohoException extends Exception
 {
     protected $message = null;
     protected $exception_json = null;
-    public function __construct($message, $exception_json = null) {
+
+    public function __construct($message, $exception_json = null)
+    {
         $this->message = $message;
         $this->exception_json = $exception_json;
         parent::__construct($message);
@@ -18,23 +20,24 @@ class ZohoException extends Exception
     {
         if ($this->exception_json !== null) {
             $this->exception_json = json_decode($this->exception_json, true);
+
             return $this;
         }
+
         return $this;
     }
 
     /**
-	 * @return int
-	 */
-	public function getHttpStatusCode(): int 
-	{
-		return intval($this->http_status_code);
+     * @return int
+     */
+    public function getHttpStatusCode(): int
+    {
+        return intval($this->http_status_code);
     }
 
-    /** 
-     * @return JSON 
+    /**
+     * @return JSON
      */
-    
     public function getExceptionJson()
     {
         return $this->exception_json;

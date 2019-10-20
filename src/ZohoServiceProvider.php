@@ -2,9 +2,10 @@
 
 namespace Asad\Zoho;
 
+use Asad\Zoho\Command\ZohoAuthentication;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Asad\Zoho\Command\ZohoAuthentication;
+
 class ZohoServiceProvider extends ServiceProvider
 {
     /**
@@ -14,7 +15,6 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ZohoAuthentication::class,
@@ -22,7 +22,6 @@ class ZohoServiceProvider extends ServiceProvider
         }
 
         $this->registerResources();
-        
     }
 
     /**
@@ -32,7 +31,6 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        
     }
 
     /**
@@ -45,7 +43,7 @@ class ZohoServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/migrations');
         $this->registerRoutes();
     }
-    
+
     /**
      * Register the package routes.
      *
@@ -57,6 +55,7 @@ class ZohoServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
         });
     }
+
     /**
      * Get the Press route group configuration array.
      *
@@ -65,10 +64,8 @@ class ZohoServiceProvider extends ServiceProvider
     private function routeConfiguration()
     {
         return [
-            'prefix' => '/',
+            'prefix'    => '/',
             'namespace' => 'Asad\Zoho\Controllers',
         ];
     }
-
-
 }

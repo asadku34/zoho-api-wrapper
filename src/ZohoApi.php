@@ -1,10 +1,10 @@
 <?php
+
 namespace Asad\Zoho;
 
 use Asad\Zoho\Client\ZohoClient;
 use Asad\Zoho\Client\ZohoRequest;
 use Asad\Zoho\Client\ZohoResponse;
-use Asad\Zoho\Authentication;
 use Asad\Zoho\Exception\AuthenticationException;
 use Asad\Zoho\Models\ZohoOauthSetting;
 
@@ -24,11 +24,13 @@ class ZohoApi
         $this->setConfigId($config_id);
         $this->setAuth(new Authentication($config_id, $scope));
     }
+
     /**
      * Set API url. Now it can be controlled from your application.
+     *
      * @return string zoho api url
      */
-    public function getApiUrl(): String
+    public function getApiUrl(): string
     {
         try {
             $env = $this->getConnectTo($this->getConfigId());
@@ -39,6 +41,7 @@ class ZohoApi
             throw new AuthenticationException($e->getMessage());
         }
         $this->api_url = 'https://'.$env.'.zohoapis.com/crm/v2/';
+
         return $this->api_url;
     }
 
@@ -52,9 +55,10 @@ class ZohoApi
         return $this->config_id;
     }
 
-    public function setClient(ZohoClient $client = null): ZohoApi
+    public function setClient(ZohoClient $client = null): self
     {
         $this->client = $client ?? new ZohoClient();
+
         return $this;
     }
 
@@ -66,6 +70,7 @@ class ZohoApi
     public function setRequest(ZohoRequest $request)
     {
         $this->request = $request;
+
         return $this;
     }
 
@@ -77,6 +82,7 @@ class ZohoApi
     public function setAuth(Authentication $auth)
     {
         $this->authentication = $auth;
+
         return $this;
     }
 
@@ -87,11 +93,13 @@ class ZohoApi
         } catch (AuthenticationException $e) {
             throw new AuthenticationException($e->getMessage());
         }
+
         return $this->authentication->getAccessToken();
     }
 
     /**
      * @param int Application configuration id
+     *
      * @return string App Running Environment.[Sandbox or Live]
      */
     public function getConnectTo($config_id = null)
@@ -103,24 +111,23 @@ class ZohoApi
         }
 
         if (is_null($setting)) {
-            throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
+            throw new AuthenticationException('Zoho API package configuration is not found. Make sure you have executed the artisan command.');
         }
 
         if (!isset($setting->connect_to)) {
-            throw new AuthenticationException("Make sure you have updated your oauth setting database.");
+            throw new AuthenticationException('Make sure you have updated your oauth setting database.');
         }
 
         if (!$setting->connect_to) {
-            throw new AuthenticationException("Make sure you have set the api environment variable.");
+            throw new AuthenticationException('Make sure you have set the api environment variable.');
         }
 
         return $setting->connect_to;
-
     }
 
     public function getUrl(): string
     {
-        return $this->getApiUrl() . $this->request->getURI();
+        return $this->getApiUrl().$this->request->getURI();
     }
 
     public function getRequestVerb()
@@ -148,7 +155,7 @@ class ZohoApi
         $action = $this->getAction();
 
         $this->response = $this->client->execute($action, $http_verb, $url, $access_token, $json_data);
+
         return $this->response;
     }
-
 }
