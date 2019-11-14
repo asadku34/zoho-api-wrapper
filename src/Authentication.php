@@ -10,7 +10,7 @@ class Authentication
     /**
      * Zoho Authentication API url base part
      */
-    private $auth_api = 'https://accounts.zoho.com/oauth/v2/'; 
+    private $auth_api = 'https://accounts.zoho.com/oauth/v2/';
     /**
      * Api scope
      */
@@ -56,10 +56,9 @@ class Authentication
         } catch (AuthenticationException $e) {
             throw new AuthenticationException($e->getMessage());
         }
-        
     }
 
-    public function getAccessToken(): String 
+    public function getAccessToken(): String
     {
         return ($this->access_token == null) ? '' : $this->access_token;
     }
@@ -97,10 +96,10 @@ class Authentication
         $client_id 		= $setting->client_id;
         $client_secret 	= $setting->client_secret;
         $id = $setting->id;
-        
+
 		$refresh_url	= $this->getRefreshTokenUrl($refreshToken, $client_id, $client_secret);
         $response = $this->getClient()->post($refresh_url, 'refreshToken')->getResults();
-        
+
         if (isset($response->error)) {
             throw new AuthenticationException($response->error);
         }
@@ -108,11 +107,10 @@ class Authentication
         $setting = ZohoOauthSetting::find($id);
         $setting->access_token  = $response->access_token;
         $setting->expires_in    = $response->expires_in;
-        $setting->expires_in_sec= $response->expires_in_sec + time();
+        $setting->expires_in_sec= isset($response->expires_in_sec) ? $response->expires_in_sec + time() : $response->expires_in + time();
         $setting->save();
-        
+
         $this->access_token = $response->access_token;
-		
     }
 
     public function getRefreshTokenUrl($refreshToken, $client_id, $client_secret)
