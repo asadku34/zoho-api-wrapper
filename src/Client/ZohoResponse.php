@@ -4,9 +4,10 @@ namespace Asad\Zoho\Client;
 
 use Asad\Zoho\Exception\ResponseException;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Str;
 
 class ZohoResponse
-{	
+{
   	protected $response = null;
 
     protected $results = null;
@@ -25,25 +26,24 @@ class ZohoResponse
 	*
 	* @param Response $response
 	*/
-    public function __construct(Response $response, $action) 
+    public function __construct(Response $response, $action)
     {
 		$this->setResponse($response);
 		$this->checkHttpStatusCode();
 		$this->parseResponse($action);
     }
-    
+
     /**
 	 * @param Response $response
 	 *
 	 * @return ZohoResponse
 	 */
-	public function setResponse(Response $response): ZohoResponse 
+	public function setResponse(Response $response): ZohoResponse
 	{
 		$this->response = $response;
 		return $this;
 	}
 
-		
 	/**
 	 * @return ZohoResponse
 	 *
@@ -51,9 +51,8 @@ class ZohoResponse
 	 */
 	protected function parseResponse($action): ZohoResponse
 	{
-		
 		$json_response = $this->response->getBody()->getContents();
-		$invoke_function = camel_case(str_replace(' ', '', $action));
+		$invoke_function = Str::camel(str_replace(' ', '', $action));
 		return $this->$invoke_function($json_response);
 
 	}
@@ -213,7 +212,7 @@ class ZohoResponse
 	}
 
 	private function delete($json_response)
-	{ 
+	{
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
@@ -308,7 +307,6 @@ class ZohoResponse
 
 	private function createNotes($json_response)
 	{
-		
 		if ($this->http_status_code == 201) {
 			return $this->setSuccessResponse($json_response);
 		}
@@ -374,7 +372,6 @@ class ZohoResponse
 
 	private function createTags($json_response)
 	{
-		
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
@@ -401,7 +398,6 @@ class ZohoResponse
 
 	private function removeTags($json_response)
 	{
-		
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
@@ -433,7 +429,7 @@ class ZohoResponse
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
-		
+
 		if ($this->http_status_code == 204) {
 			$this->noContentException();
 		}
@@ -445,13 +441,13 @@ class ZohoResponse
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
-		
+
 		if ($this->http_status_code == 204) {
 			$this->noContentException();
 		}
 		$this->yieldException($json_response);
 	}
-	
+
 	private function deleteAttachment($json_response)
 	{
 		if ($this->http_status_code == 200) {
@@ -483,7 +479,7 @@ class ZohoResponse
 		if ($this->http_status_code == 200) {
 			return $this->setSuccessResponse($json_response);
 		}
-		
+
 		if ($this->http_status_code == 204) {
 			$this->noContentException();
 		}
@@ -552,7 +548,7 @@ class ZohoResponse
 		}
 		$this->yieldException($json_response);
 	}
-	
+
 	private function queryLanguage($json_response)
 	{
 		if ($this->http_status_code == 200) {
@@ -565,14 +561,11 @@ class ZohoResponse
 		$this->yieldException($json_response);
 	}
 
-	
-
-
 	/**
 	 * Check HTTP status code (silent/No exceptions!)
 	 * @return int
 	 */
-	protected function checkHttpStatusCode(): int 
+	protected function checkHttpStatusCode(): int
 	{
 		$this->http_status_code = $this->response->getStatusCode();
 		return $this->http_status_code;
@@ -582,16 +575,16 @@ class ZohoResponse
 	 *
 	 * @return array
 	 */
-	public function toArray(string $json_response): array 
+	public function toArray(string $json_response): array
 	{
 		$this->array_response = json_decode($json_response, true);
 		return $this->array_response;
 	}
-		
+
 	/**
 	 * @return array
 	 */
-	public function getResults() 
+	public function getResults()
 	{
 		return $this->results;
 	}
@@ -600,7 +593,7 @@ class ZohoResponse
 	 *
 	 * @return $this
 	 */
-	public function setResults($results) 
+	public function setResults($results)
 	{
 		$this->results = json_decode($results);
 		return $this;
@@ -608,7 +601,7 @@ class ZohoResponse
 	/**
 	 * @return string
 	 */
-	public function getStatus(): string 
+	public function getStatus(): string
 	{
 		return $this->status;
 	}
@@ -617,7 +610,7 @@ class ZohoResponse
 	 *
 	 * @return ZohoRespone
 	 */
-	public function setStatus(string $status): ZohoResponse 
+	public function setStatus(string $status): ZohoResponse
 	{
 		$this->status = $status;
 		return $this;
@@ -625,7 +618,7 @@ class ZohoResponse
 	/**
 	 * @return array
 	 */
-	public function getArrayResponse(): array 
+	public function getArrayResponse(): array
 	{
 		return $this->array_response;
 	}
@@ -634,7 +627,7 @@ class ZohoResponse
 	 *
 	 * @return ZohoResponse
 	 */
-	public function setArrayResponse(array $array_response): ZohoResponse 
+	public function setArrayResponse(array $array_response): ZohoResponse
 	{
 		$this->array_response = $array_response;
 		return $this;
@@ -642,7 +635,7 @@ class ZohoResponse
 	/**
 	 * @return mixed
 	 */
-	public function getErrorMessage() 
+	public function getErrorMessage()
 	{
 		return $this->error_message;
 	}
@@ -651,7 +644,7 @@ class ZohoResponse
 	 *
 	 * @return ZohoResponse
 	 */
-	public function setErrorMessage($error_message): ZohoResponse 
+	public function setErrorMessage($error_message): ZohoResponse
 	{
 		$this->error_message = $error_message;
 		return $this;
@@ -659,10 +652,9 @@ class ZohoResponse
 	/**
 	 * @return int
 	 */
-	public function getHttpStatusCode(): int 
+	public function getHttpStatusCode(): int
 	{
 		return intval($this->http_status_code);
 	}
-
 
 }
