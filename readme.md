@@ -96,6 +96,9 @@ Those are follows:
 - Attachments APIs
 - Query APIs
 
+## Documentation
+See the documentation at : [Zoho API Wrapper](https://zoho-wrapper.readthedocs.io/en/latest/)
+
 ## Contributing
 
 Contributions are **welcome** and will be fully **credited**.
