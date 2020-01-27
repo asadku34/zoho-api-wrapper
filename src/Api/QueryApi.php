@@ -12,7 +12,7 @@ class QueryApi extends RestApi
     }
     /**
      * @param array $select_query
-     * 
+     *
      * @return array
      */
     public function getRecordsByQuery($select_query, $param = [])

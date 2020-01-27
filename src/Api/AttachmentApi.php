@@ -24,7 +24,7 @@ class AttachmentApi extends RestApi
         $request = $this->createRequest('upload-attachment', $module, $param);
         return $this->makeRequest($request);
     }
-    
+
     public function downloadAttachment($module, $record_id, $attachment_id)
     {
         $param['extension'] = $record_id ."/Attachments"."/". $attachment_id;

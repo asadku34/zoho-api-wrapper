@@ -14,9 +14,9 @@ class ZohoClient
         $this->setClient(new Client());
     }
 
-     /* 
+     /*
      * @param Guzzle Client
-     * 
+     *
      * @return Zoho Client
      *  */
 
@@ -69,7 +69,6 @@ class ZohoClient
                 throw new ZohoException($e->getMessage());
             }
         }
-        
         return new ZohoResponse($res, $action);
     }
 
@@ -85,7 +84,6 @@ class ZohoClient
                 throw new ZohoException($e->getMessage());
             }
         }
-        
         return new ZohoResponse($res, $action);
     }
 
@@ -100,7 +98,6 @@ class ZohoClient
                 throw new ZohoException($e->getMessage());
             }
         }
-        
         return new ZohoResponse($res, $action);
     }
 

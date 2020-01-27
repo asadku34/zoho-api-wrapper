@@ -60,7 +60,6 @@ class ZohoController extends Controller
                         $response['status'] = 'failed';
                         $response['message'] = 'You have failed to generate the access token. Please check and try again.';
                     }
-                    
                     return json_encode($response);
 				}
 			}

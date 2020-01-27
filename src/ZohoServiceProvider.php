@@ -14,15 +14,12 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ZohoAuthentication::class,
             ]);
         }
-
         $this->registerResources();
-        
     }
 
     /**
@@ -32,7 +29,7 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        
+        //Register service here
     }
 
     /**
@@ -45,7 +42,7 @@ class ZohoServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/migrations');
         $this->registerRoutes();
     }
-    
+
     /**
      * Register the package routes.
      *

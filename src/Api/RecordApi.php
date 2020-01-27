@@ -11,7 +11,7 @@ class RecordApi extends RestApi
     }
     /**
      * @param $module = 'Leads'
-     * 
+     *
      */
     public function listOfRecords($module, array $param=[])
     {
@@ -21,7 +21,7 @@ class RecordApi extends RestApi
 
     /**
      * @param string $module = 'Leads'
-     * 
+     *
      * @param string $record_id = '1108640000047708962'
      */
     public function recordById($module, $record_id)
@@ -32,9 +32,9 @@ class RecordApi extends RestApi
 
     /**
      * @param string $module = 'Lead'
-     * 
+     *
      * @param array $param = ['email' => 'test@gmail.com']
-     *  
+     *
      */
     public function search($module, array $param)
     {

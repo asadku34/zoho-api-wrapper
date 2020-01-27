@@ -7,8 +7,8 @@ use Asad\Zoho\Exception\RequestException;
 class ZohoRequest
 {
     /**
-     * Query parameter 
-     * */ 
+     * Query parameter
+     * */
     protected $parameter = null;
     protected $action = null;
     protected $module = null;
@@ -21,7 +21,7 @@ class ZohoRequest
 	*
 	* @param Query
 	*/
-    public function __construct($action, $module, array $param) 
+    public function __construct($action, $module, array $param)
     {
         $this->setModule($module);
         $this->processRequest($action, $param);
@@ -89,11 +89,11 @@ class ZohoRequest
 
             $data_param = isset($param['data']) ? $param['data'] : $param;
             $data_param = (isset($data_param[0]) && is_array($data_param[0])) ? $data_param[0] : $data_param;
-            
+
             foreach ($data_param as $key => $val) {
                 $this->parameter[$key] = $val;
             }
-            
+
             $this->setActionVerb('Record List', 'GET');
             $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());
         }
@@ -114,7 +114,7 @@ class ZohoRequest
             $this->setDataJson($param);
             $this->URI = $this->module;
         }
-        
+
         if ($action == 'update') {
             $this->setActionVerb('Update', 'PUT');
             $record_id = $param['record_id'];
@@ -131,7 +131,7 @@ class ZohoRequest
 
         if ($action == 'b-delete') {
             $this->setActionVerb('Bulk Delete', 'DELETE');
-            $this->URI = $this->module ."?ids=". implode(',', $param); 
+            $this->URI = $this->module ."?ids=". implode(',', $param);
         }
 
         if ($action == 'delete') {
@@ -265,7 +265,7 @@ class ZohoRequest
             $this->setActionVerb('Delete Attachment', 'DELETE');
             $this->URI = $this->module ."/". $param['extension'];
         }
-        
+
         if ($action == 'download-attachment') {
             $this->setActionVerb('Download Attachment', 'GET');
             $this->URI = $this->module ."/". $param['extension'];
@@ -379,7 +379,7 @@ class ZohoRequest
         return $this;
     }
 
-    public function getDataJson() 
+    public function getDataJson()
     {
         return $this->data_json;
     }

@@ -51,6 +51,4 @@ class NoteApi extends RestApi
         return $this->makeRequest($request);
     }
     
-
-
 }

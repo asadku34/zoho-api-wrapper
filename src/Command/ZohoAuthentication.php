@@ -59,7 +59,7 @@ class ZohoAuthentication extends Command
         $flight = ZohoOauthSetting::updateOrCreate(
             ['client_id' => $client_id],
             [
-                'client_id'         => $client_id, 
+                'client_id'         => $client_id,
                 'client_secret'     => $client_secret,
                 'client_domain'     => $client_domain,
                 'protocol'          => $protocol,
