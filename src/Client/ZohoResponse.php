@@ -71,15 +71,18 @@ class ZohoResponse
 			$this->internalServerException($json_response);
 		}
 
-		$error_response = json_decode($json_response);
 		$this->setStatus('error');
+		$error_response = json_decode($json_response);
+		if (isset($error_response->code)) {
+			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+		}
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
 	private function internalServerException($json_response)
 	{
-		$error_response = json_decode($json_response);
 		$this->setStatus('error');
+		$error_response = json_decode($json_response);
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
@@ -97,27 +100,36 @@ class ZohoResponse
 
 	private function insertException($json_response)
 	{
+		$this->setStatus('error');
 		$error_response = json_decode($json_response);
+		if (isset($error_response->code)) {
+			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+		}
 		$error_response = collect($error_response->data);
 		$error_response = $error_response->first();
-		$this->setStatus('error');
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
 	private function updateException($json_response)
 	{
+		$this->setStatus('error');
 		$error_response = json_decode($json_response);
+		if (isset($error_response->code)) {
+			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+		}
 		$error_response = collect($error_response->data);
 		$error_response = $error_response->first();
-		$this->setStatus('error');
 		throw new ResponseException("Failed to update one/more records.", $this->http_status_code, json_encode($error_response));
 	}
 	private function deleteException($json_response)
 	{
+		$this->setStatus('error');
 		$error_response = json_decode($json_response);
+		if (isset($error_response->code)) {
+			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+		}
 		$error_response = collect($error_response->data);
 		$error_response = $error_response->first();
-		$this->setStatus('error');
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
@@ -282,10 +294,13 @@ class ZohoResponse
 
 	private function deleteNoteException($json_response)
 	{
+		$this->setStatus('error');
 		$error_response = json_decode($json_response);
+		if (isset($error_response->code)) {
+			throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
+		}
 		$error_response = collect($error_response->data);
 		$error_response = $error_response->first();
-		$this->setStatus('error');
 		throw new ResponseException($error_response->message, $this->http_status_code, json_encode($error_response));
 	}
 
