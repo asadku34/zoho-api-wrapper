@@ -17,10 +17,10 @@ class ZohoRequest
     protected $data_json = null;
 
     /**
-	* ZohoRequest constructor.
-	*
-	* @param Query
-	*/
+     * ZohoRequest constructor.
+     *
+     * @param Query
+     */
     public function __construct($action, $module, array $param)
     {
         $this->setModule($module);
@@ -40,7 +40,7 @@ class ZohoRequest
 
     public function setModule(string $module): ZohoRequest
     {
-        if(is_null($module)) {
+        if (is_null($module)) {
             throw new RequestException("Module Name Missing");
         }
         $this->module = $module;
@@ -76,7 +76,7 @@ class ZohoRequest
                 $this->parameter[$key] = $val;
             }
             $this->setActionVerb($action, 'GET');
-            $this->URI = str_replace('/?', '?', $this->module ."/". $this->action ."?". $this->getQuery());
+            $this->URI = str_replace('/?', '?', $this->module . "/" . $this->action . "?" . $this->getQuery());
         }
 
         if ($action === 'list_of_record') {
@@ -95,12 +95,12 @@ class ZohoRequest
             }
 
             $this->setActionVerb('Record List', 'GET');
-            $this->URI = str_replace('/?', '?', $this->module ."?". $this->getQuery());
+            $this->URI = str_replace('/?', '?', $this->module . "?" . $this->getQuery());
         }
 
         if ($action == 'specific_record') {
             $this->setActionVerb('Specific Record', 'GET');
-            $this->URI = $this->module ."/". implode('',$param);
+            $this->URI = $this->module . "/" . implode('', $param);
         }
 
         if ($action == 'insert') {
@@ -120,23 +120,23 @@ class ZohoRequest
             $record_id = $param['record_id'];
             unset($param['record_id']);
             $this->setDataJson($param);
-            $this->URI = $this->module ."/". $record_id;
+            $this->URI = $this->module . "/" . $record_id;
         }
 
         if ($action == 'upsert') {
             $this->setActionVerb('Upsert', 'POST');
             $this->setDataJson($param);
-            $this->URI = $this->module ."/upsert";
+            $this->URI = $this->module . "/upsert";
         }
 
         if ($action == 'b-delete') {
             $this->setActionVerb('Bulk Delete', 'DELETE');
-            $this->URI = $this->module ."?ids=". implode(',', $param);
+            $this->URI = $this->module . "?ids=" . implode(',', $param);
         }
 
         if ($action == 'delete') {
             $this->setActionVerb('Delete', 'DELETE');
-            $this->URI = $this->module ."/". implode('',$param);
+            $this->URI = $this->module . "/" . implode('', $param);
         }
 
         if ($action == 'deleted') {
@@ -144,7 +144,7 @@ class ZohoRequest
                 $this->parameter[$key] = $val;
             }
             $this->setActionVerb('Deleted', 'GET');
-            $this->URI = $this->module ."/". $this->action ."?". $this->getQuery();
+            $this->URI = $this->module . "/" . $this->action . "?" . $this->getQuery();
         }
 
         // Get Module List
@@ -157,24 +157,24 @@ class ZohoRequest
 
         if ($action == 'module-meta') {
             $this->setActionVerb('Module Meta', 'GET');
-            $this->URI = implode('', $param) ."modules/". $this->module;
+            $this->URI = implode('', $param) . "modules/" . $this->module;
         }
 
         if ($action == 'field-meta') {
             $this->setActionVerb('Field Meta', 'GET');
-            $this->URI = implode('', $param) ."fields?module=". $this->module;
+            $this->URI = implode('', $param) . "fields?module=" . $this->module;
         }
 
         if ($action == 'layout-meta') {
             $this->setActionVerb('Layout Meta', 'GET');
-            $this->URI = implode('', $param) ."layouts?module=". $this->module;
+            $this->URI = implode('', $param) . "layouts?module=" . $this->module;
         }
 
         if ($action == 'layout-meta-id') {
             $this->setActionVerb('Layout Meta By Id', 'GET');
             $layout_id = $param[1];
             $param = $param[0];
-            $this->URI = implode('', $param) ."layouts/". $layout_id ."?module=". $this->module;
+            $this->URI = implode('', $param) . "layouts/" . $layout_id . "?module=" . $this->module;
         }
 
         //Note Api
@@ -215,16 +215,28 @@ class ZohoRequest
             $this->URI = $param['extension'];
         }
 
+        //User Api
+        if ($action == 'user-data') {
+            $this->setActionVerb('User Data', 'GET');
+            $this->URI = $this->module . '?type=' . $param['type'];
+        }
+
+        if ($action == 'user-data-by-id') {
+            $this->setActionVerb('Get Specific User', 'GET');
+            $this->URI = $this->module . '?type=' . $param['z_user_id'];
+        }
+
+
         //Tag Api
         if ($action == 'tags-list') {
             $this->setActionVerb('Tag List', 'GET');
-            $this->URI = 'settings/tags?module='.$this->module;
+            $this->URI = 'settings/tags?module=' . $this->module;
         }
 
         if ($action == 'create-tags') {
             $this->setActionVerb('Create Tags', 'POST');
             $this->setDataJson($param);
-            $this->URI = 'settings/tags?module='.$this->module;
+            $this->URI = 'settings/tags?module=' . $this->module;
         }
 
         if ($action == 'update-tags') {
@@ -232,12 +244,12 @@ class ZohoRequest
             $tag_id = $param['z_tag_id'];
             unset($param['z_tag_id']);
             $this->setDataJson($param);
-            $this->URI = 'settings/tags/'. $tag_id .'?module='. $this->module;
+            $this->URI = 'settings/tags/' . $tag_id . '?module=' . $this->module;
         }
 
         if ($action == 'remove-tags') {
             $this->setActionVerb('Remove Tags', 'DELETE');
-            $this->URI = 'settings/tags/'. implode('', $param);
+            $this->URI = 'settings/tags/' . implode('', $param);
         }
 
         if ($action == 'create-specific-tags') {
@@ -245,7 +257,7 @@ class ZohoRequest
             $record_id = $param['z_record_id'];
             unset($param['z_record_id']);
             $this->setDataJson($param);
-            $this->URI = $this->module .'/'. $record_id .'/actions/add_tags?tag_names='.implode(',', $param);
+            $this->URI = $this->module . '/' . $record_id . '/actions/add_tags?tag_names=' . implode(',', $param);
         }
 
         if ($action == 'remove-specific-tags') {
@@ -253,27 +265,27 @@ class ZohoRequest
             $record_id = $param['z_record_id'];
             unset($param['z_record_id']);
             $this->setDataJson($param);
-            $this->URI = $this->module .'/'. $record_id .'/actions/remove_tags?tag_names='.implode(',', $param);
+            $this->URI = $this->module . '/' . $record_id . '/actions/remove_tags?tag_names=' . implode(',', $param);
         }
 
         //Attachments Api
         if ($action == 'list-of-attachments') {
             $this->setActionVerb('List Of Attachments', 'GET');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
         if ($action == 'delete-attachment') {
             $this->setActionVerb('Delete Attachment', 'DELETE');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         if ($action == 'download-attachment') {
             $this->setActionVerb('Download Attachment', 'GET');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         if ($action == 'download-images') {
             $this->setActionVerb('Download Images', 'GET');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         if ($action == 'upload-attachment') {
@@ -281,7 +293,7 @@ class ZohoRequest
             $extension = $param['extension'];
             unset($param['extension']);
             $this->setDataJson($param);
-            $this->URI = $this->module ."/". $extension;
+            $this->URI = $this->module . "/" . $extension;
         }
 
         if ($action == 'upload-images') {
@@ -289,18 +301,18 @@ class ZohoRequest
             $extension = $param['extension'];
             unset($param['extension']);
             $this->setDataJson($param);
-            $this->URI = $this->module ."/". $extension;
+            $this->URI = $this->module . "/" . $extension;
         }
 
         if ($action == 'delete-images') {
             $this->setActionVerb('Delete Images', 'DELETE');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         //RelatedList API
         if ($action == 'get-relatedlist') {
             $this->setActionVerb('Relatedlist Records', 'GET');
-            $this->URI = $this->module ."/". $param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         if ($action == 'update-relatedlist') {
@@ -308,12 +320,12 @@ class ZohoRequest
             $uri_extension = $param['extension'];
             unset($param['extension']);
             $this->setDataJson($param);
-            $this->URI = $this->module ."/". $uri_extension;
+            $this->URI = $this->module . "/" . $uri_extension;
         }
 
         if ($action == 'remove-relatedlist') {
             $this->setActionVerb('Remove Relatedlist', 'DELETE');
-            $this->URI = $this->module ."/".$param['extension'];
+            $this->URI = $this->module . "/" . $param['extension'];
         }
 
         // CRM Object Query Language
@@ -349,10 +361,10 @@ class ZohoRequest
         if (strtolower($criteria) == 'email') {
             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $response = [
-                    'code' 		=> 'IVALID_EMAIL',
-                    'details' 	=> [],
-                    'message' 	=> 'There is no content available for the request.',
-                    'status' 	=> 'error',
+                    'code'         => 'IVALID_EMAIL',
+                    'details'     => [],
+                    'message'     => 'There is no content available for the request.',
+                    'status'     => 'error',
                 ];
                 throw new RequestException('Please input a valid email', json_encode($response));
             }
@@ -363,7 +375,7 @@ class ZohoRequest
     {
         $param = [];
         foreach ($this->parameter as $key => $value) {
-            $param[$key] = (string)$value;
+            $param[$key] = (string) $value;
         }
         return (count($param) > 0) ? urldecode(http_build_query($param)) : '';
     }

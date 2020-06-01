@@ -8,32 +8,32 @@ use Illuminate\Support\Str;
 
 class ZohoResponse
 {
-  	protected $response = null;
+	protected $response;
 
-    protected $results = null;
+	protected $results;
 
-    protected $status = null;
+	protected $status;
 
-    protected $error_message = null;
+	protected $error_message;
 
-    protected $array_response = null;
+	protected $array_response;
 
-	protected $http_status_code = null;
+	protected $http_status_code;
 
 
-    /**sss
-	* ZohoResponse constructor.
-	*
-	* @param Response $response
-	*/
-    public function __construct(Response $response, $action)
-    {
+	/**sss
+	 * ZohoResponse constructor.
+	 *
+	 * @param Response $response
+	 */
+	public function __construct(Response $response, $action)
+	{
 		$this->setResponse($response);
 		$this->checkHttpStatusCode();
 		$this->parseResponse($action);
-    }
+	}
 
-    /**
+	/**
 	 * @param Response $response
 	 *
 	 * @return ZohoResponse
@@ -54,7 +54,6 @@ class ZohoResponse
 		$json_response = $this->response->getBody()->getContents();
 		$invoke_function = Str::camel(str_replace(' ', '', $action));
 		return $this->$invoke_function($json_response);
-
 	}
 
 	private function setSuccessResponse($json_response)
@@ -210,7 +209,6 @@ class ZohoResponse
 		}
 
 		$this->yieldException($json_response);
-
 	}
 
 	private function bulkUpdate($json_response)
@@ -366,6 +364,31 @@ class ZohoResponse
 		}
 
 		$this->yieldException($json_response);
+	}
+
+	//Process User Api
+	private function userResponse($json_response)
+	{
+		if ($this->http_status_code == 200) {
+			return $this->setSuccessResponse($json_response);
+		}
+		$this->yieldException($json_response);
+	}
+
+	private function userData($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		return $this->userResponse($json_response);
+	}
+
+	private function getSpecificUser($json_response)
+	{
+		if ($this->http_status_code == 204) {
+			$this->noContentException();
+		}
+		return $this->userResponse($json_response);
 	}
 
 	//Process Tag Api
@@ -671,5 +694,4 @@ class ZohoResponse
 	{
 		return intval($this->http_status_code);
 	}
-
 }
