@@ -223,7 +223,7 @@ class ZohoRequest
 
         if ($action == 'user-data-by-id') {
             $this->setActionVerb('Get Specific User', 'GET');
-            $this->URI = $this->module . '?type=' . $param['z_user_id'];
+            $this->URI = $this->module . '/' . $param['z_user_id'];
         }
 
 
