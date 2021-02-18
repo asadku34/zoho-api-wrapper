@@ -1,4 +1,4 @@
-# ZOHO CRM API V2 Wrapper for Laravel 5.x
+# ZOHO CRM API V2 Wrapper for Laravel 5|6|7|8
 
 [![Laravel 5.x](https://img.shields.io/badge/Laravel-5.x-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/asad/laravel-zoho-api-wrapper.svg)](https://packagist.org/packages/asad/laravel-zoho-api-wrapper)
@@ -9,15 +9,18 @@
 To easing [ZOHO](https://www.zoho.com/crm/developer/docs/api/overview.html) REST API V2 call for Laravel application.
 
 ## Requirements
-- [PHP >= 7.0](http://php.net/)
-- [Laravel 5.4|5.5|5.6|5.7](https://github.com/laravel/framework)
+
+-   [PHP >= 7.0](http://php.net/)
+-   [Laravel 5|6|7|8](https://github.com/laravel/framework)
 
 ## Installation
+
 ```bash
 $ composer require asad/laravel-zoho-api-wrapper
 ```
 
 #### Configuration
+
 ```bash
 $ php artisan zoho:authentication
 
@@ -35,6 +38,11 @@ Select your env. [sandbox]:
 [0] sandbox
 [1] live
 > 0
+Is it CN DC?
+[0] No
+[1] Yes
+Scopes? (ex: ZohoCRM.modules.ALL,ZohoCRM.settings.ALL) If you skip it will enable ex: scopes
+> (zoho scopes)
 
 Copy the following url, paste on browser and hit return.
 https://accounts.zoho.com/oauth/v2/auth?....
@@ -69,7 +77,7 @@ Class ZohoController extends Controller
     }
 
     public function listOfRecords($module, array $param)
-    {   
+    {
         $record_api = new RecordApi();
         try {
             $response = $record_api->listOfRecords($module, $param);
@@ -86,17 +94,20 @@ Class ZohoController extends Controller
 ```
 
 ## APIs
+
 Currently there are only 7 api wrappers.
 Those are follows:
-- Record APIs
-- Meta Data APIs (It also belong Module API)
-- Note APIs
-- Related List APIs
-- Tag APIs
-- Attachments APIs
-- Query APIs
+
+-   Record APIs
+-   Meta Data APIs (It also belong Module API)
+-   Note APIs
+-   Related List APIs
+-   Tag APIs
+-   Attachments APIs
+-   Query APIs
 
 ## Documentation
+
 See the documentation at : [Zoho API Wrapper](https://zoho-wrapper.readthedocs.io/en/latest/)
 
 ## Contributing
@@ -111,7 +122,7 @@ If you discover any issues, please email at [asadku34@gmail.com](mailto:asadku34
 
 ## Credits
 
-- [Asadur Rahman](https://github.com/asadku34)
+-   [Asadur Rahman](https://github.com/asadku34)
 
 ## License
 

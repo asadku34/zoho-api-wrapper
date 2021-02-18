@@ -20,7 +20,7 @@ class ZohoAuthentication extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'To Generate Zoho Authorization Request URL';
 
     /**
      * Create a new command instance.
@@ -52,9 +52,39 @@ class ZohoAuthentication extends Command
         $client_domain  = $this->ask('Input client domain (ex: example.com)');
         $protocol       = $this->choice('Select your protocol.', ['http', 'https'], 0);
         $environment    = $this->choice('Select your env.', ['sandbox', 'live'], 0);
-        $redirect_route =  $protocol .'://'. rtrim($client_domain, '/') . '/oauth2back';
+        $cn_dc             = $this->choice('Is it CN DC?', ['No', "Yes"], 0);
 
-        $redirect_url = 'https://accounts.zoho.com/oauth/v2/auth?scope=ZohoCRM.modules.ALL,ZohoCRM.settings.ALL&client_id='.$client_id.'&response_type=code&access_type=offline&redirect_uri='.$redirect_route;
+        $scopes = $this->ask('Scopes? (ex: ZohoCRM.modules.ALL,ZohoCRM.settings.ALL) If you skip it will enable ex scopes');
+
+        $api_scopes = "ZohoCRM.modules.ALL,ZohoCRM.settings.ALL";
+        if ($scopes) {
+            $api_scopes = $scopes;
+        }
+
+        $base = "https://accounts.zoho.com";
+
+        if ($cn_dc == "Yes") {
+            $base = "https://accounts.zoho.com.cn";
+        }
+
+        $elements = [
+            $protocol,
+            '://',
+            rtrim($client_domain, '/'),
+            '/',
+            config('zoho.redirect_to')
+        ];
+        $redirect_route =  implode("", $elements);
+
+        $params = [
+            "scope={$api_scopes}",
+            "client_id={$client_id}",
+            "response_type=code",
+            "access_type=offline",
+            "redirect_uri={$redirect_route}",
+        ];
+
+        $redirect_url = $base . '/oauth/v2/auth?' . implode("&", $params);
 
         $flight = ZohoOauthSetting::updateOrCreate(
             ['client_id' => $client_id],

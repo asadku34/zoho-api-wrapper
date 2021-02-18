@@ -1,11 +1,12 @@
 <?php
+
 namespace Asad\Zoho\Api;
 
 use Asad\Zoho\Abstracts\RestApi;
 
 class RecordApi extends RestApi
 {
-    public function __construct($config_id=null)
+    public function __construct($config_id = null)
     {
         parent::__construct($config_id);
     }
@@ -13,7 +14,7 @@ class RecordApi extends RestApi
      * @param $module = 'Leads'
      *
      */
-    public function listOfRecords($module, array $param=[])
+    public function listOfRecords($module, array $param = [])
     {
         $request = $this->createRequest('list_of_record', $module, $param);
         return $this->makeRequest($request);
@@ -31,9 +32,9 @@ class RecordApi extends RestApi
     }
 
     /**
-     * @param string $module = 'Lead'
+     * @param string $module = 'Leads'
      *
-     * @param array $param = ['email' => 'test@gmail.com']
+     * @param array $param = ['email' => 'search@fake.com']
      *
      */
     public function search($module, array $param)
@@ -92,6 +93,4 @@ class RecordApi extends RestApi
         //TODO:: Need to Implement
         echo "Need to implement";
     }
-
-
 }

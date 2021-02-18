@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho\Client;
 
 use GuzzleHttp\Client;
@@ -14,7 +15,7 @@ class ZohoClient
         $this->setClient(new Client());
     }
 
-     /*
+    /*
      * @param Guzzle Client
      *
      * @return Zoho Client
@@ -32,7 +33,7 @@ class ZohoClient
         return [
             'Accept' => 'application/json',
             'Content-Length' => '0',
-            'Authorization' => 'Zoho-oauthtoken '.$access_token
+            'Authorization' => 'Zoho-oauthtoken ' . $access_token
         ];
     }
 
@@ -52,7 +53,6 @@ class ZohoClient
         }
 
         return $data_headers;
-
     }
 
     public function execute($action, $http_verb, $url, $access_token, array $data = null)
@@ -65,7 +65,7 @@ class ZohoClient
         } catch (GuzzleRequestException $e) {
             if ($e->hasResponse()) {
                 $res = $e->getResponse();
-            }else{
+            } else {
                 throw new ZohoException($e->getMessage());
             }
         }
@@ -80,25 +80,24 @@ class ZohoClient
         } catch (GuzzleRequestException $e) {
             if ($e->hasResponse()) {
                 $res = $e->getResponse();
-            }else{
+            } else {
                 throw new ZohoException($e->getMessage());
             }
         }
         return new ZohoResponse($res, $action);
     }
 
-    public function post($url, $action='post')
+    public function post($url, $action = 'post')
     {
         try {
             $res = $this->client->request('POST', $url);
         } catch (GuzzleRequestException $e) {
             if ($e->hasResponse()) {
                 $res = $e->getResponse();
-            }else{
+            } else {
                 throw new ZohoException($e->getMessage());
             }
         }
         return new ZohoResponse($res, $action);
     }
-
 }

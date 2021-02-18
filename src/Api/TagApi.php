@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho\Api;
 
 use Asad\Zoho\Abstracts\RestApi;
@@ -6,7 +7,7 @@ use Asad\Zoho\Abstracts\RestApi;
 class TagApi extends RestApi
 {
     private $tag_extension = [];
-    public function __construct($config_id=null)
+    public function __construct($config_id = null)
     {
         parent::__construct($config_id);
     }
@@ -49,5 +50,4 @@ class TagApi extends RestApi
         $request = $this->createRequest('remove-specific-tags', $module, $param);
         return $this->makeRequest($request);
     }
-
 }

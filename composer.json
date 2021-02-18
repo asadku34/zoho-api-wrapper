@@ -1,12 +1,14 @@
 {
     "name": "asad/laravel-zoho-api-wrapper",
     "description": "This is ZOHO REST API-V2 wrapper",
+    "keywords":    ["ZOHO", "OAUTH2", "ZOHO-OAUTH2", "ZOHO-CRM", "API", "REST-API", "ZOHO-API-V2", "Query-API", "Wrapper"],
+    "homepage":    "https://github.com/asadku34/zoho-api-wrapper",
     "require": {
-        "php": "^7.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "php": "~7.0",
+        "guzzlehttp/guzzle": "^6.3|~7.0"
     },
     "require-dev": {
-        
+
     },
     "license": "MIT",
     "authors": [

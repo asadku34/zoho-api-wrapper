@@ -5,6 +5,7 @@ namespace Asad\Zoho;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Asad\Zoho\Command\ZohoAuthentication;
+
 class ZohoServiceProvider extends ServiceProvider
 {
     /**
@@ -14,6 +15,10 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__ . '/../config/zoho.php' => config_path('zoho.php'),
+        ], 'zoho');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ZohoAuthentication::class,
@@ -29,7 +34,7 @@ class ZohoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //Register service here
+        $this->mergeConfigFrom(__DIR__ . '/../config/zoho.php', 'zoho');
     }
 
     /**
@@ -39,7 +44,7 @@ class ZohoServiceProvider extends ServiceProvider
      */
     private function registerResources()
     {
-        $this->loadMigrationsFrom(__DIR__.'/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
         $this->registerRoutes();
     }
 
@@ -51,7 +56,7 @@ class ZohoServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
+            $this->loadRoutesFrom(__DIR__ . '/routes/routes.php');
         });
     }
     /**
@@ -66,6 +71,4 @@ class ZohoServiceProvider extends ServiceProvider
             'namespace' => 'Asad\Zoho\Controllers',
         ];
     }
-
-
 }

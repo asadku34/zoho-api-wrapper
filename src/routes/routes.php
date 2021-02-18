@@ -1,6 +1,4 @@
 <?php
 
 Route::get('zoho', 'ZohoController@zoho');
-Route::get('oauth2back', 'ZohoController@oauth2back');
-
-
+Route::get(config('zoho.redirect_to'), 'ZohoController@oauth2back');

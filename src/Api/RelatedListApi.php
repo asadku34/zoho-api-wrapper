@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho\Api;
 
 use Asad\Zoho\Abstracts\RestApi;
@@ -6,7 +7,7 @@ use Asad\Zoho\Abstracts\RestApi;
 class RelatedListApi extends RestApi
 {
     private $list_extension = [];
-    public function __construct($config_id=null)
+    public function __construct($config_id = null)
     {
         parent::__construct($config_id);
     }
@@ -19,7 +20,7 @@ class RelatedListApi extends RestApi
      */
     public function getRelatedRecords($module, $record_id, $related_list)
     {
-        $param['extension'] = $record_id ."/". $related_list;
+        $param['extension'] = $record_id . "/" . $related_list;
         $request = $this->createRequest('get-relatedlist', $module, $param);
         return $this->makeRequest($request);
     }
@@ -36,16 +37,15 @@ class RelatedListApi extends RestApi
 
     public function updateRelatedList($module, $record_id, $related_list, $related_record_id, $param = [])
     {
-        $param['extension'] = $record_id ."/". $related_list ."/". $related_record_id;
+        $param['extension'] = $record_id . "/" . $related_list . "/" . $related_record_id;
         $request = $this->createRequest('update-relatedlist', $module, $param);
         return $this->makeRequest($request);
     }
 
     public function removeRelatedList($module, $record_id, $related_list, $related_record_id)
     {
-        $param['extension'] = $record_id ."/". $related_list ."/". $related_record_id;
+        $param['extension'] = $record_id . "/" . $related_list . "/" . $related_record_id;
         $request = $this->createRequest('remove-relatedlist', $module, $param);
         return $this->makeRequest($request);
     }
-
 }

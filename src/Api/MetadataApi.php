@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho\Api;
 
 use Asad\Zoho\Abstracts\RestApi;
@@ -6,7 +7,7 @@ use Asad\Zoho\Abstracts\RestApi;
 class MetadataApi extends RestApi
 {
     private $meta_extension = ['settings/'];
-    public function __construct($config_id=null)
+    public function __construct($config_id = null)
     {
         parent::__construct($config_id);
     }
@@ -42,6 +43,4 @@ class MetadataApi extends RestApi
         $request = $this->createRequest('layout-meta-id', $module_name, $param);
         return $this->makeRequest($request);
     }
-
-
 }

@@ -19,6 +19,7 @@ class CreateZohoOauth2Migration extends Migration
             $table->string('client_secret', 128)->nullable();
             $table->string('client_domain', 64)->nullable();
             $table->string('protocol', 12)->nullable();
+            $table->string('accounts_server', 62)->nullable();
             $table->string('api_domain', 62)->nullable();
             $table->enum('connect_to', ['sandbox', 'live'])->default('sandbox');
             $table->string('access_token', 191)->nullable();

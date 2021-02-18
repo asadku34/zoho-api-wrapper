@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,13 @@ class ZohoOauthSetting extends Model
      *
      * @var array
      */
-    protected $hidden = [
+    protected $hidden = [];
 
-    ];
+    public static function getOauthById($id)
+    {
+        if (!$id) {
+            return self::orderBy('created_at', 'desc')->take(1)->first();
+        }
+        return self::find($id);
+    }
 }

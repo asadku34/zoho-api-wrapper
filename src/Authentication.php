@@ -1,4 +1,5 @@
 <?php
+
 namespace Asad\Zoho;
 
 use Asad\Zoho\Client\ZohoClient;
@@ -7,121 +8,123 @@ use Asad\Zoho\Models\ZohoOauthSetting;
 
 class Authentication
 {
+    //Default API Domain
+    protected $api_domain = "https://www.zohoapis.com";
+    private $ext = "crm/v2/";
     /**
      * Zoho Authentication API url base part
      */
-    private $auth_api = 'https://accounts.zoho.com/oauth/v2/';
-    /**
-     * Api scope
-     */
-    private $scope = null;
+    private $accounts_server = 'https://accounts.zoho.com';
+
     /**
      * Api access token
      */
-    protected $access_token = null;
+    protected $access_token;
     /**
      * Configuration: Multiple authentication can be operated by define the configuration id.
      */
     private $config_id = null;
+    /**
+     * Zoho Oauth Setting
+     */
+    private $setting;
 
-    public function __construct($config_id = null, string $scope = null)
+    public function __construct($config_id = null)
     {
-        $this->setScope($scope);
+        $this->config_id = $config_id;
+        $this->validateToken();
     }
 
-    public function makeRedirectUrl($client_id, $redirect_route)
+    private function validateToken()
     {
-        return $this->auth_api . "auth?scope=" . $this->getScope()
-                . "&client_id=" . $client_id . "&response_type=code&access_type=offline&redirect_uri="
-                . $redirect_route;
+        $this->setting = ZohoOauthSetting::getOauthById($this->config_id);
+
+        if (!$this->setting) throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
+
+        if ($this->setting->expires_in_sec <= (time() + 120)) {
+            try {
+                $this->refreshAccessToken();
+            } catch (AuthenticationException $e) {
+                $additional_msg = "It's seems something happened to your refresh token.";
+                throw new AuthenticationException($e->getMessage() . " - " . $additional_msg);
+            }
+        }
+
+        $this->access_token = $this->setting->access_token;
     }
 
-    public function setScope(string $scope = null): Authentication
+    private function refreshAccessToken()
     {
-        $this->scope = $scope ?? "ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ";
-        return $this;
+        $refresh_url    = $this->genRefreshTokenUrl();
+        $response = $this->getClient()->post($refresh_url, 'refreshToken')->getResults();
+
+        if (isset($response->error)) throw new AuthenticationException($response->error);
+
+        $setting = ZohoOauthSetting::find($this->setting->id);
+
+        if (!$setting) throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
+
+        $setting->access_token  = $response->access_token;
+        $setting->expires_in    = $response->expires_in;
+        $setting->expires_in_sec = isset($response->expires_in_sec) ? $response->expires_in_sec + time() : $response->expires_in + time();
+        $setting->save();
+
+        $this->setting = $setting;
     }
 
-    public function getScope()
+    private function genRefreshTokenUrl()
     {
-        return $this->scope;
+        $elements = [
+            "refresh_token=" . $this->setting->refresh_token,
+            "client_id=" . $this->setting->client_id,
+            "client_secret=" . $this->setting->client_secret,
+            "grant_type=refresh_token",
+        ];
+        $query_param = implode("&", $elements);
+        $auth_api = isset($this->setting->accounts_server) && $this->setting->accounts_server ? $this->setting->accounts_server : $this->accounts_server;
+        return $auth_api . "/oauth/v2/token?" . $query_param;
     }
     /**
-     * @param string $config_id
+     * Get Access token outside of this class
      */
-    public function setAccessToken($config_id)
+    public function getAccessToken(): String
+    {
+        return $this->access_token;
+    }
+    /**
+     * Get Zoho api url outside of this class
+     */
+    public function getApiUrl()
     {
         try {
-            $this->validAccessToken($config_id);
+            $env = $this->connectTo();
+            $api_url = $this->getApiDomain($env);
         } catch (AuthenticationException $e) {
             throw new AuthenticationException($e->getMessage());
         }
+        return $api_url . "/" . $this->ext;
     }
 
-    public function getAccessToken(): String
+    private function connectTo()
     {
-        return ($this->access_token == null) ? '' : $this->access_token;
+
+        if (!isset($this->setting->connect_to)) throw new AuthenticationException("Make sure you have updated your oauth setting database.");
+
+        if (!$this->setting->connect_to) throw new AuthenticationException("Make sure you have set the api environment variable.");
+
+        return $this->setting->connect_to;
     }
 
-    public function validAccessToken($config_id)
+    private function getApiDomain($env)
     {
-        if ($config_id == null) {
-            $setting = ZohoOauthSetting::orderBy('created_at', 'desc')->take(1)->first();
-        } else {
-            $setting = ZohoOauthSetting::find($config_id);
-        }
 
-        if (is_null($setting)) {
-            throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
-        }
-
-        $now = time() + 300; // Generate Refresh Token before five minutes.
-        if($setting->expires_in_sec <= $now){
-            try {
-                $this->refreshAccessToken($setting);
-            } catch (AuthenticationException $e) {
-                $additional_msg = "It's seems something happened to your refresh token.";
-                throw new AuthenticationException($e->getMessage()." - ".$additional_msg);
-            }
-        }else{
-            $this->access_token = $setting->access_token;
-        }
-
-        return $this->access_token;
+        $this->api_domain = isset($this->setting->api_domain) && $this->setting->api_domain ? $this->setting->api_domain : $this->api_domain;
+        $this->api_domain = $env != 'live' ? str_replace("www", "sandbox", $this->api_domain) : $this->api_domain;
+        return $this->api_domain;
     }
 
-    public function refreshAccessToken($setting)
-    {
-        $refreshToken 	= $setting->refresh_token;
-        $client_id 		= $setting->client_id;
-        $client_secret 	= $setting->client_secret;
-        $id = $setting->id;
-
-		$refresh_url	= $this->getRefreshTokenUrl($refreshToken, $client_id, $client_secret);
-        $response = $this->getClient()->post($refresh_url, 'refreshToken')->getResults();
-
-        if (isset($response->error)) {
-            throw new AuthenticationException($response->error);
-        }
-
-        $setting = ZohoOauthSetting::find($id);
-        $setting->access_token  = $response->access_token;
-        $setting->expires_in    = $response->expires_in;
-        $setting->expires_in_sec= isset($response->expires_in_sec) ? $response->expires_in_sec + time() : $response->expires_in + time();
-        $setting->save();
-
-        $this->access_token = $response->access_token;
-    }
-
-    public function getRefreshTokenUrl($refreshToken, $client_id, $client_secret)
-    {
-        $refresh_url_ext = 'token?refresh_token='.$refreshToken.'&client_id='.$client_id.'&client_secret='.$client_secret.'&grant_type=refresh_token';
-        return $this->auth_api . $refresh_url_ext;
-    }
-
-    public function getClient()
+    private function getClient()
     {
         return new ZohoClient();
     }
-
 }
