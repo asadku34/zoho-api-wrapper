@@ -29,6 +29,13 @@ class Authentication
      */
     private $setting;
 
+    /**
+     * Tracking token expire before each call
+     *
+     * @var integer
+     */
+    protected $expires_in_sec;
+
     public function __construct($config_id = null)
     {
         $this->config_id = $config_id;
@@ -41,16 +48,26 @@ class Authentication
 
         if (!$this->setting) throw new AuthenticationException("Zoho API package configuration is not found. Make sure you have executed the artisan command.");
 
-        if ($this->setting->expires_in_sec <= (time() + 120)) {
-            try {
-                $this->refreshAccessToken();
-            } catch (AuthenticationException $e) {
-                $additional_msg = "It's seems something happened to your refresh token.";
-                throw new AuthenticationException($e->getMessage() . " - " . $additional_msg);
-            }
+        $this->expires_in_sec = $this->setting->expires_in_sec;
+
+        if ($this->expires_in_sec <= (time() + 60)) {
+            $this->performTokenRefresh();
         }
 
         $this->access_token = $this->setting->access_token;
+    }
+
+    /**
+     * @return void
+     */
+    private function performTokenRefresh()
+    {
+        try {
+            $this->refreshAccessToken();
+        } catch (AuthenticationException $e) {
+            $additional_msg = "It's seems something happened to your refresh token.";
+            throw new AuthenticationException($e->getMessage() . " - " . $additional_msg);
+        }
     }
 
     private function refreshAccessToken()
@@ -89,6 +106,12 @@ class Authentication
      */
     public function getAccessToken(): String
     {
+        if ($this->expires_in_sec <= (time() + 60)) {
+            $this->performTokenRefresh();
+
+            $this->access_token = $this->setting->access_token;
+            $this->expires_in_sec = $this->setting->expires_in_sec;
+        }
         return $this->access_token;
     }
     /**
