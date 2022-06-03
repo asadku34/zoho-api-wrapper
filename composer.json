@@ -4,7 +4,7 @@
     "keywords":    ["ZOHO", "OAUTH2", "ZOHO-OAUTH2", "ZOHO-CRM", "API", "REST-API", "ZOHO-API-V2", "Query-API", "Wrapper"],
     "homepage":    "https://github.com/asadku34/zoho-api-wrapper",
     "require": {
-        "php": "~7.0",
+        "php": "~7.0|~8.0",
         "guzzlehttp/guzzle": "^6.3|~7.0"
     },
     "require-dev": {
